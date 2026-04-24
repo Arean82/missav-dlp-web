@@ -416,10 +416,47 @@ document.getElementById('saveSettingsBtn').onclick = async () => {
     }
 };
 
-// Close modal when clicking outside
+// Docs Modal Logic
+const docsModal = document.getElementById('docsModal');
+const docsSelect = document.getElementById('docsSelect');
+const docsContent = document.getElementById('docsContent');
+const docsModalTitle = document.getElementById('docsModalTitle');
+
+docsSelect.onchange = async (e) => {
+    const docType = e.target.value;
+    if (!docType) return;
+
+    docsModalTitle.textContent = docType.toUpperCase();
+    docsContent.textContent = 'Loading...';
+    docsModal.style.display = 'flex';
+
+    try {
+        const res = await fetch(`/api/docs/${docType}`);
+        const data = await res.json();
+        if (data.status === 'success') {
+            docsContent.textContent = data.content;
+        } else {
+            docsContent.textContent = 'Failed to load document.';
+        }
+    } catch(e) {
+        docsContent.textContent = 'Error loading document.';
+    }
+    
+    // Reset dropdown back to placeholder
+    docsSelect.value = "";
+};
+
+document.getElementById('closeDocsBtn').onclick = () => {
+    docsModal.style.display = 'none';
+};
+
+// Close modals when clicking outside
 window.onclick = function(event) {
     if (event.target === modal) {
         modal.style.display = 'none';
+    }
+    if (event.target === docsModal) {
+        docsModal.style.display = 'none';
     }
 };
 

@@ -78,10 +78,12 @@ app.secret_key = os.urandom(24)  # Required for session
 # Initialize language manager
 lang_manager.init_app(app)
 
+# Routes
 @app.route('/')
 def index():
     return render_template('index.html')
 
+# API routes for language management
 @app.route('/api/language', methods=['GET'])
 def get_language():
     """Get current language"""
@@ -93,6 +95,7 @@ def get_language():
         'supported': lang_manager.supported_langs
     })
 
+# API route to set language
 @app.route('/api/language', methods=['POST'])
 def set_language():
     """Set language"""
@@ -107,6 +110,7 @@ def set_language():
     
     return jsonify({'status': 'error', 'message': 'Unsupported language'}), 400
 
+# API route to get supported languages and their names
 @app.route('/api/languages', methods=['GET'])
 def get_languages():
     """Get list of supported languages"""
@@ -132,6 +136,7 @@ def info():
         return jsonify({"status": "success", "info": info})
     return jsonify({"status": "error", "message": "Failed to get video info"}), 500
 
+# Download route with optional format selection
 @app.route('/api/download', methods=['POST'])
 def download():
     data = request.json
@@ -142,6 +147,7 @@ def download():
     task_id = add_download(url, selected_format)
     return jsonify({"status": "success", "task_id": task_id})
 
+# Batch download route
 @app.route('/api/batch', methods=['POST'])
 def batch():
     data = request.json
@@ -151,10 +157,12 @@ def batch():
     task_ids = add_batch(urls)
     return jsonify({"status": "success", "task_ids": task_ids, "count": len(task_ids)})
 
+# Task management routes
 @app.route('/api/tasks', methods=['GET'])
 def get_tasks():
     return jsonify(tasks)
 
+# Allow deletion of tasks from the queue (only if they haven't started)
 @app.route('/api/tasks/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
     if task_id in tasks:
@@ -162,24 +170,29 @@ def delete_task(task_id):
         return jsonify({"status": "success"})
     return jsonify({"status": "error"}), 404
 
+# Queue management routes
 @app.route('/api/queue/clear', methods=['POST'])
 def queue_clear():
     cleared = clear_queue()
     return jsonify({"status": "success", "cleared": len(cleared)})
 
+# Clean completed tasks from the queue
 @app.route('/api/queue/clean', methods=['POST'])
 def queue_clean():
     cleaned = clean_completed()
     return jsonify({"status": "success", "cleaned": len(cleaned)})
 
+# Get queue stats
 @app.route('/api/queue/stats', methods=['GET'])
 def queue_stats():
     return jsonify(get_queue_stats())
 
+# Settings routes
 @app.route('/api/settings', methods=['GET'])
 def get_settings():
     return jsonify(settings)
 
+# Update settings and adjust download threads if max_concurrent changed
 @app.route('/api/settings', methods=['PUT'])
 def update_settings():
     global settings, DOWNLOAD_DIR
@@ -194,6 +207,7 @@ def update_settings():
     
     return jsonify({"status": "success"})
 
+# File management routes
 @app.route('/api/files', methods=['GET'])
 def list_files():
     files = []
@@ -205,6 +219,7 @@ def list_files():
     files.sort(key=lambda x: x['modified'], reverse=True)
     return jsonify(files)
 
+# Allow downloading of files in download directory
 @app.route('/api/files/<path:filename>/download', methods=['GET'])
 def download_file(filename):
     fp = DOWNLOAD_DIR / filename
@@ -212,6 +227,7 @@ def download_file(filename):
         return send_file(fp, as_attachment=True)
     return jsonify({"status": "error"}), 404
 
+# Allow deletion of files in download directory
 @app.route('/api/files/<path:filename>', methods=['DELETE'])
 def delete_file(filename):
     fp = DOWNLOAD_DIR / filename
@@ -220,6 +236,37 @@ def delete_file(filename):
         return jsonify({"status": "success"})
     return jsonify({"status": "error"}), 404
 
+# Documentation routes
+@app.route('/api/docs/<doc_type>', methods=['GET'])
+def get_doc(doc_type):
+    if doc_type not in ['readme', 'security', 'license']:
+        return jsonify({"status": "error", "message": "Invalid doc type"}), 400
+
+    lang = session.get('language', 'en')
+    base_filenames = {
+        'readme': 'README.md',
+        'security': 'SECURITY.md',
+        'license': 'LICENSE'
+    }
+
+    target_file = ROOT_DIR / base_filenames[doc_type]
+    
+    # Check for localized file (except for LICENSE)
+    if doc_type != 'license' and lang != 'en':
+        lang_file = ROOT_DIR / base_filenames[doc_type].replace('.md', f'.{lang}.md')
+        if lang_file.exists():
+            target_file = lang_file
+
+    content = ""
+    if target_file.exists():
+        with open(target_file, 'r', encoding='utf-8') as f:
+            content = f.read()
+    else:
+        content = f"Documentation file ({base_filenames[doc_type]}) not found in root directory."
+
+    return jsonify({"status": "success", "content": content})
+
+# Log retrieval route
 @app.route('/api/logs/<task_id>', methods=['GET'])
 def get_log(task_id):
     log_file = ROOT_DIR / 'logs' / f'task_{task_id}.log'

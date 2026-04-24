@@ -17,6 +17,12 @@
                 <option value="ja">🇯🇵 日本語</option>
                 <option value="zh">🇨🇳 中文</option>
             </select>
+            <select id="docsSelect" class="language-select">
+                <option value="" disabled selected>📄 Docs</option>
+                <option value="readme">README</option>
+                <option value="security">SECURITY</option>
+                <option value="license">LICENSE</option>
+            </select>
             <button id="settingsBtn" class="btn-secondary">⚙️ <span data-i18n="settings">Settings</span></button>
         </div>
     </div>
@@ -123,6 +129,16 @@
     </div>
 </div>
 
+<!-- Docs Modal -->
+<div id="docsModal" class="modal hidden">
+    <div class="modal-content" style="max-width: 800px; max-height: 80vh; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 id="docsModalTitle" style="margin:0;">Document</h3>
+            <button id="closeDocsBtn" class="btn-secondary" style="padding: 5px 10px;">✕</button>
+        </div>
+        <pre id="docsContent" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace; font-size: 14px; line-height: 1.6; text-align: left; background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; overflow-y: auto; flex-grow: 1; margin:0;">Loading...</pre>
+    </div>
+</div>
 <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
