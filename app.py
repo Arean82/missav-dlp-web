@@ -261,11 +261,9 @@ def get_doc(doc_type):
     content = ""
     if target_file.exists():
         with open(target_file, 'r', encoding='utf-8') as f:
-            raw_md = f.read()
-        # Convert markdown to HTML on the backend
-        content = markdown.markdown(raw_md)
+            content = f.read()
     else:
-        content = f"<p>Documentation file ({base_filenames[doc_type]}) not found.</p>"
+        content = f"Documentation file ({base_filenames[doc_type]}) not found."
 
     return jsonify({"status": "success", "content": content})
 

@@ -434,7 +434,7 @@ docsSelect.onchange = async (e) => {
         const res = await fetch(`/api/docs/${docType}`);
         const data = await res.json();
         if (data.status === 'success') {
-            docsContent.textContent = data.content;
+            docsContent.innerHTML = marked.parse(data.content);
         } else {
             docsContent.textContent = 'Failed to load document.';
         }
