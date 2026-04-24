@@ -1,5 +1,5 @@
 {
-  "max_concurrent": 1,
+  "max_concurrent": 2,
   "filename_template": "[%(id)s] %(title).60s.%(ext)s",
   "spoofdpi_enabled": true,
   "video_quality": "480p",

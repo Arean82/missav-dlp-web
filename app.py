@@ -12,7 +12,7 @@ from pathlib import Path
 from flask import Flask, request, render_template, jsonify, send_file, session, make_response
 from app_files.download_manager import (
     get_video_info, add_download, add_batch, tasks, get_queue_stats,
-    clear_queue, clean_completed
+    clear_queue, clean_completed, adjust_workers
 )
 from app_files.config_manager import load_settings, save_settings
 from app_files.utils import is_jav_code, jav_code_to_url
@@ -188,6 +188,10 @@ def update_settings():
     save_settings(settings)
     DOWNLOAD_DIR = Path(settings.get('download_dir', str(DOWNLOADS_DIR)))
     DOWNLOAD_DIR.mkdir(exist_ok=True)
+    
+    # Dynamically adjust download threads if max_concurrent changed
+    adjust_workers(settings.get('max_concurrent', 1))
+    
     return jsonify({"status": "success"})
 
 @app.route('/api/files', methods=['GET'])

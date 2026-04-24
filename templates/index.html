@@ -87,6 +87,10 @@
             <input type="text" id="settingsDownloadDir" class="setting-input">
         </div>
         <div class="setting-group">
+            <label><span data-i18n="max_concurrent">Max Concurrent Downloads</span>:</label>
+            <input type="number" id="settingsMaxConcurrent" class="setting-input" min="1" max="5" value="1">
+        </div>
+        <div class="setting-group">
             <label class="checkbox-label">
                 <input type="checkbox" id="settingsSequentialMode"> <span data-i18n="sequential_mode">Sequential Mode (one at a time)</span>
             </label>

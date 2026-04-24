@@ -253,11 +253,26 @@ def worker():
         
         download_queue.task_done()
 
-def start_workers():
-    for _ in range(settings.get('max_concurrent', 1)):
+active_threads = []
+
+def start_workers(count=None):
+    global active_threads
+    if count is None:
+        count = settings.get('max_concurrent', 1)
+    
+    # Clean up dead threads from the list
+    active_threads = [t for t in active_threads if t.is_alive()]
+    
+    # Start new threads if needed
+    while len(active_threads) < count:
         t = threading.Thread(target=worker, daemon=True)
         t.start()
+        active_threads.append(t)
 
+def adjust_workers(new_count):
+    start_workers(new_count)
+
+# Start initial workers
 start_workers()
 
 def clear_queue():

@@ -305,6 +305,7 @@ const modal = document.getElementById('settingsModal');
 
 function populateSettingsForm(settings) {
     document.getElementById('settingsDownloadDir').value = settings.download_dir || './downloads';
+    document.getElementById('settingsMaxConcurrent').value = settings.max_concurrent || 1;
     document.getElementById('settingsSequentialMode').checked = settings.sequential_mode !== false;
     document.getElementById('settingsDelay').value = settings.delay_between_downloads || 3;
     document.getElementById('settingsQuality').value = settings.video_quality || 'best';
@@ -390,6 +391,7 @@ document.getElementById('saveSettingsBtn').onclick = async () => {
     try {
         const settings = {
             download_dir: document.getElementById('settingsDownloadDir').value,
+            max_concurrent: parseInt(document.getElementById('settingsMaxConcurrent').value) || 1,
             sequential_mode: document.getElementById('settingsSequentialMode').checked,
             delay_between_downloads: parseInt(document.getElementById('settingsDelay').value),
             video_quality: document.getElementById('settingsQuality').value,
