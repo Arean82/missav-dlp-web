@@ -7,6 +7,7 @@ import os
 import json
 import subprocess
 import time
+import markdown
 import uuid
 from pathlib import Path
 from flask import Flask, request, render_template, jsonify, send_file, session, make_response
@@ -260,9 +261,11 @@ def get_doc(doc_type):
     content = ""
     if target_file.exists():
         with open(target_file, 'r', encoding='utf-8') as f:
-            content = f.read()
+            raw_md = f.read()
+        # Convert markdown to HTML on the backend
+        content = markdown.markdown(raw_md)
     else:
-        content = f"Documentation file ({base_filenames[doc_type]}) not found in root directory."
+        content = f"<p>Documentation file ({base_filenames[doc_type]}) not found.</p>"
 
     return jsonify({"status": "success", "content": content})
 
