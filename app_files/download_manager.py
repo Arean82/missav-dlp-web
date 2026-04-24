@@ -62,11 +62,16 @@ def get_video_info(url):
             'quiet': True,
             'no_warnings': True,
             'extract_flat': False,
+            'http_headers': {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                'Referer': 'https://missav.ws/',
+                'Origin': 'https://missav.ws',
+            }
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.add_info_extractor(MyCustomMissAV(settings=settings))
-            ydl.add_default_info_extractors()
+            # Do not add default extractors to prevent built-in MissAV extractor conflicts
             info = ydl.extract_info(url, download=False)
             
             formats = []
@@ -113,6 +118,8 @@ def add_download(url, selected_format=None):
         'selected_format': selected_format,
         'filename': None,
         'filesize': None,
+        'resolution': '-',
+        'time_taken': None,
         'created_at': time.time()
     }
     download_queue.put(task_id)
@@ -173,11 +180,20 @@ def download_video(task_id, url, selected_format=None):
             )
             print(f"[FORMAT] Requested: {selected_height}p, Selector: {format_selector}")
     # --- NEW FORMAT LOGIC END ---
-    
-    # Use root ffmpeg path
-    ffmpeg_path = FFMPEG_DIR / 'bin' / 'ffmpeg.exe'
-    if not ffmpeg_path.exists():
-        ffmpeg_path = 'ffmpeg'
+     
+    # Record the resolution for the UI
+    if effective_format and effective_format != 'best' and match:
+        task['resolution'] = f"{selected_height}p"
+    else:
+        task['resolution'] = "Best"
+   
+    # Use custom FFmpeg path from settings, or fallback to system PATH
+    ffmpeg_custom_dir = settings.get('ffmpeg_path', '').strip()
+    if ffmpeg_custom_dir:
+        ext = '.exe' if os.name == 'nt' else ''
+        ffmpeg_path = str(Path(ffmpeg_custom_dir) / f'ffmpeg{ext}')
+    else:
+        ffmpeg_path = 'ffmpeg' # Fallback to system PATH
     
     ydl_opts = {
         'outtmpl': str(DOWNLOAD_DIR / tmpl),
@@ -205,9 +221,12 @@ def download_video(task_id, url, selected_format=None):
         
         task_logger.info(f"Format selector: {format_selector}")
         
+        # Start timer
+        download_start_time = time.time()
+        
         with yt_dlp.YoutubeDL(ydl_opts, auto_init=False) as ydl:
             ydl.add_info_extractor(MyCustomMissAV(settings=settings))
-            ydl.add_default_info_extractors()
+            #ydl.add_default_info_extractors()
             ydl.download([url])
         
         # Search for downloaded file
@@ -217,10 +236,14 @@ def download_video(task_id, url, selected_format=None):
                 task['filesize'] = f.stat().st_size
                 break
         
+        # Calculate time taken
+        download_end_time = time.time()
+        task['time_taken'] = round(download_end_time - download_start_time, 2)
+        
         task['status'] = 'Completed'
         task['stage'] = 'Complete'
         task['progress'] = 100
-        task_logger.info("Download completed successfully")
+        task_logger.info(f"Download completed successfully in {task['time_taken']}s")
         
     except Exception as e:
         error_msg = str(e)[:200]

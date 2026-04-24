@@ -193,11 +193,27 @@ def queue_stats():
 def get_settings():
     return jsonify(settings)
 
-# Update settings and adjust download threads if max_concurrent changed
+# Update settings and adjust download threads if max_concurrent changed or validate FFmpeg path
 @app.route('/api/settings', methods=['PUT'])
 def update_settings():
     global settings, DOWNLOAD_DIR
     new_settings = request.json
+    
+    # Validate FFmpeg path if provided
+    ffmpeg_path = new_settings.get('ffmpeg_path', '').strip()
+    if ffmpeg_path:
+        bin_dir = Path(ffmpeg_path)
+        if not bin_dir.exists():
+            return jsonify({"status": "error", "message": "FFmpeg directory does not exist."}), 400
+        
+        # Check for required files
+        ext = '.exe' if platform.system() == 'Windows' else ''
+        required = [f'ffmpeg{ext}', f'ffprobe{ext}', f'ffplay{ext}']
+        missing = [f for f in required if not (bin_dir / f).exists()]
+        
+        if missing:
+            return jsonify({"status": "error", "message": f"Missing FFmpeg files in that directory: {', '.join(missing)}"}), 400
+            
     settings.update(new_settings)
     save_settings(settings)
     DOWNLOAD_DIR = Path(settings.get('download_dir', str(DOWNLOADS_DIR)))
@@ -227,6 +243,17 @@ def download_file(filename):
     if fp.exists():
         return send_file(fp, as_attachment=True)
     return jsonify({"status": "error"}), 404
+
+# Allow cleaning of all files in download directory (use with caution)
+@app.route('/api/files/clean_history', methods=['POST'])
+def clean_history():
+    deleted_count = 0
+    if DOWNLOAD_DIR.exists():
+        for f in DOWNLOAD_DIR.iterdir():
+            if f.is_file() and not f.name.startswith('.'):
+                f.unlink()
+                deleted_count += 1
+    return jsonify({"status": "success", "deleted": deleted_count})
 
 # Allow deletion of files in download directory
 @app.route('/api/files/<path:filename>', methods=['DELETE'])

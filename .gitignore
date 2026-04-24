@@ -6,3 +6,4 @@ webservice/app_files/__pycache__/*
 1.txt
 build/*
 dist/*
+downloads/*

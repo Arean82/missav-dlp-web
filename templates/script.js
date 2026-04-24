@@ -67,6 +67,13 @@ function formatSize(bytes) {
     return bytes + ' B';
 }
 
+function formatTime(seconds) {
+    if (!seconds) return '-';
+    const m = Math.floor(seconds / 60);
+    const s = Math.round(seconds % 60);
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
 function escapeHtml(str) {
     if (!str) return '';
     const div = document.createElement('div');
@@ -119,12 +126,20 @@ async function fetchTasks() {
             const stage = t.stage || '';
             const title = t.filename || (t.url ? t.url.substring(0, 50) : 'Unknown');
             
+            // Build metadata string (Resolution | Size | Time)
+            const metaInfo = [
+                t.resolution ? `📐 ${t.resolution}` : '',
+                t.filesize ? `💾 ${formatSize(t.filesize)}` : '',
+                t.time_taken ? `⏱️ ${formatTime(t.time_taken)}` : ''
+            ].filter(Boolean).join(' | ');
+            
             return `
                 <div class="task-card ${cls}">
                     <div class="task-top">
                         <div style="flex:1">
                             <strong>${escapeHtml(title)}</strong>
                             <div style="font-size:12px; opacity:0.8">${statusText} ${stage ? `- ${stage}` : ''}</div>
+                            ${metaInfo ? `<div style="font-size:11px; margin-top:4px; color:#aaa;">${metaInfo}</div>` : ''}
                         </div>
                         <button onclick="deleteTask('${id}')" class="btn-danger" style="padding:5px 10px">✕</button>
                     </div>
@@ -293,6 +308,16 @@ document.getElementById('cleanBtn').onclick = async () => {
     fetchTasks();
 };
 
+document.getElementById('cleanHistoryBtn').onclick = async () => {
+    if (confirm('Are you sure you want to delete ALL downloaded files?')) {
+        const res = await fetch('/api/files/clean_history', { method: 'POST' });
+        const data = await res.json();
+        alert(`Deleted ${data.deleted} files.`);
+        fetchFiles();
+        fetchTasks();
+    }
+};
+
 document.getElementById('clearBtn').onclick = async () => {
     if (confirm(_('clear_waiting_confirm'))) {
         await fetch('/api/queue/clear', { method: 'POST' });
@@ -305,6 +330,7 @@ const modal = document.getElementById('settingsModal');
 
 function populateSettingsForm(settings) {
     document.getElementById('settingsDownloadDir').value = settings.download_dir || './downloads';
+    document.getElementById('settingsFfmpegPath').value = settings.ffmpeg_path || '';
     document.getElementById('settingsMaxConcurrent').value = settings.max_concurrent || 1;
     document.getElementById('settingsSequentialMode').checked = settings.sequential_mode !== false;
     document.getElementById('settingsDelay').value = settings.delay_between_downloads || 3;
@@ -391,6 +417,7 @@ document.getElementById('saveSettingsBtn').onclick = async () => {
     try {
         const settings = {
             download_dir: document.getElementById('settingsDownloadDir').value,
+            ffmpeg_path: document.getElementById('settingsFfmpegPath').value,
             max_concurrent: parseInt(document.getElementById('settingsMaxConcurrent').value) || 1,
             sequential_mode: document.getElementById('settingsSequentialMode').checked,
             delay_between_downloads: parseInt(document.getElementById('settingsDelay').value),
@@ -409,7 +436,8 @@ document.getElementById('saveSettingsBtn').onclick = async () => {
             modal.style.display = 'none';
             alert(_('settings_saved'));
         } else {
-            throw new Error('Failed to save');
+            const errData = await res.json();
+            throw new Error(errData.message || 'Failed to save');
         }
     } catch(e) {
         alert(_('error') + ': ' + e.message);

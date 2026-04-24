@@ -67,6 +67,7 @@
         <div class="stats" id="stats"></div>
         <div class="button-group">
             <button id="cleanBtn" class="btn-secondary">🧹 <span data-i18n="clean_completed">Clean Completed</span></button>
+            <button id="cleanHistoryBtn" class="btn-danger">🗑️ <span data-i18n="clean_history">Clean History</span></button>
             <button id="clearBtn" class="btn-danger">🗑 <span data-i18n="clear_waiting">Clear Waiting</span></button>
         </div>
     </div>
@@ -87,11 +88,16 @@
 
 <!-- Settings Modal -->
 <div id="settingsModal" class="modal hidden" style="display: none;">
-    <div class="modal-content">
+    <div class="modal-content" style="max-height: 90vh; overflow-y: auto;">
         <h3><span data-i18n="settings_title">Settings</span></h3>
         <div class="setting-group">
             <label><span data-i18n="download_dir">Download Directory</span>:</label>
             <input type="text" id="settingsDownloadDir" class="setting-input">
+        </div>
+        <div class="setting-group">
+            <label><span data-i18n="ffmpeg_path">FFmpeg Bin Directory</span>:</label>
+            <input type="text" id="settingsFfmpegPath" class="setting-input" placeholder="e.g., C:\ffmpeg\bin">
+            <small style="opacity:0.7;">Must contain ffmpeg, ffprobe, and ffplay</small>
         </div>
         <div class="setting-group">
             <label><span data-i18n="max_concurrent">Max Concurrent Downloads</span>:</label>
