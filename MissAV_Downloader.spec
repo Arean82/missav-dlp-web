@@ -1,29 +1,69 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+import sys
+import os
+from PyInstaller.utils.hooks import collect_data_files, collect_submodules
+
+# Add hidden imports for all necessary modules
+hidden_imports = [
+    'flask',
+    'yt_dlp',
+    'curl_cffi',
+    'waitress',
+    'jinja2',
+    'markupsafe',
+    'itsdangerous',
+    'click',
+    'werkzeug',
+    'werkzeug.utils',
+    'werkzeug.routing',
+    'werkzeug.wsgi',
+    'certifi',
+    'brotli',
+    'brotli._brotli',
+    'charset_normalizer',
+    'charset_normalizer.md__mypyc',
+    'idna',
+    'urllib3',
+    'urllib3.poolmanager',
+    'urllib3.connectionpool',
+    'requests',
+    'requests.models',
+    'requests.sessions',
+    'requests.adapters',
+    'http.cookiejar',
+    'json',
+    're',
+    'time',
+    'threading',
+    'queue',
+    'uuid',
+    'logging',
+    'subprocess',
+    'platform',
+    'shutil',
+    'pathlib',
+    'webbrowser',
+]
+
+# Collect data files
+datas = [
+    ('templates', 'templates'),
+    ('locales', 'locales'),
+    ('app_files', 'app_files'),
+    ('spoofdpi.exe', '.'),  # Include spoofdpi.exe in root
+]
+
+# If you have ffmpeg folder
+if os.path.exists('ffmpeg'):
+    datas.append(('ffmpeg', 'ffmpeg'))
+
 a = Analysis(
-    ['launcher.py'],  # Entry point - NOT app.py
+    ['app.py'],
     pathex=[],
     binaries=[],
-    datas=[
-        ('templates', 'templates'),
-        ('app_files', 'app_files'),
-        ('locales', 'locales'),
-        ('spoofdpi.exe', '.'),
-    ],
-    hiddenimports=[
-        'flask',
-        'werkzeug',
-        'jinja2',
-        'yt_dlp',
-        'curl_cffi',
-        'waitress',
-        'app_files.config_manager',
-        'app_files.download_manager',
-        'app_files.extractor',
-        'app_files.language',
-        'app_files.paths',
-        'app_files.utils',
-    ],
+    datas=datas,
+    hiddenimports=hidden_imports,
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
@@ -46,11 +86,22 @@ exe = EXE(
     upx=True,
     upx_exclude=[],
     runtime_tmpdir=None,
-    console=True,  # Set to False to hide console window
+    console=True,  # Console window for debugging
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon='icon.ico',  # Optional: add your icon file
+    icon=None,  # Add 'assets/app.ico' if you have one
+)
+
+# Create a COLLECTION for one-folder mode (optional)
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=True,
+    upx_exclude=[],
+    name='MissAV_Downloader',
 )

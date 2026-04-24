@@ -4,3 +4,5 @@ logs/*
 startup_resources/__pycache__/*
 webservice/app_files/__pycache__/*
 1.txt
+build/*
+dist/*
