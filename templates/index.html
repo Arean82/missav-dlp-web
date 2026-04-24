@@ -40,7 +40,10 @@
     <!-- Video Info -->
     <div class="card" id="infoCard" style="display:none">
         <h3><span data-i18n="video_info">Video Information</span></h3>
+
+        <p id="videoTitle" style="font-weight:bold; word-break:break-all;">-</p>
         <p><span data-i18n="code">Code</span>: <span id="videoCode">-</span> | <span data-i18n="duration">Duration</span>: <span id="videoDuration">-</span></p>
+
         <div id="previewWarning" class="warning hidden"><span data-i18n="preview_warning">⚠️ Preview video (short version)</span></div>
         <div class="quality-row">
             <label><span data-i18n="quality">Quality</span>:</label>
@@ -96,9 +99,13 @@
             <label><span data-i18n="default_quality">Default Quality</span>:</label>
             <select id="settingsQuality" class="setting-input">
                 <option value="best"><span data-i18n="best">Best</span></option>
+                <option value="2160p">2160p</option>
+                <option value="1440p">1440p</option>
                 <option value="1080p">1080p</option>
                 <option value="720p">720p</option>
                 <option value="480p">480p</option>
+                <option value="360p">360p</option>
+                <option value="240p">240p</option>
             </select>
         </div>
         <div class="setting-group">

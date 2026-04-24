@@ -155,55 +155,24 @@ def download_video(task_id, url, selected_format=None):
     
     tmpl = settings.get('filename_template', '[%(id)s] %(title).60s.%(ext)s')
     
-    # Map resolution to height filter
-    def get_fallback_format_id(available_formats, selected_height):
-        priority_list = [2160, 1440, 1080, 720, 480, 360, 240]
-        
-        # Map available formats to their heights
-        available_heights = {}
-        for f in available_formats:
-            h = f.get('height')
-            if h:
-                available_heights[h] = f.get('format_id')
-                
-        # If exact match exists, return it
-        if selected_height in available_heights:
-            return available_heights[selected_height]
-            
-        try:
-            start_idx = priority_list.index(selected_height)
-        except ValueError:
-            return 'best'
-            
-        # 1. Go UP the list (towards higher resolution)
-        for i in range(start_idx - 1, -1, -1):
-            h = priority_list[i]
-            if h in available_heights:
-                return available_heights[h]
-                
-        # 2. If reached top and failed, go DOWN the list (towards lower resolution)
-        for i in range(start_idx + 1, len(priority_list)):
-            h = priority_list[i]
-            if h in available_heights:
-                return available_heights[h]
-                
-        return 'best'
-
+    # --- NEW FORMAT LOGIC START ---
+    # Use manual selection, or fallback to default quality from settings.json (for batch)
+    effective_format = selected_format or settings.get('video_quality', 'best')
+    
     format_selector = 'best'
-    if selected_format:
-        match = re.search(r'(\d{3,4})', selected_format)
+    if effective_format and effective_format != 'best':
+        match = re.search(r'(\d{3,4})', str(effective_format))
         if match:
             selected_height = int(match.group(1))
-            
-            # Extract formats to find the exact format_id to use
-            ydl_opts_check = {'quiet': True, 'no_warnings': True}
-            with yt_dlp.YoutubeDL(ydl_opts_check) as ydl_check:
-                ydl_check.add_info_extractor(MyCustomMissAV(settings=settings))
-                ydl_check.add_default_info_extractors()
-                info_check = ydl_check.extract_info(url, download=False)
-                
-            exact_format_id = get_fallback_format_id(info_check.get('formats', []), selected_height)
-            format_selector = exact_format_id
+            # 1. Exact match -> 2. Go UP -> 3. Go DOWN -> 4. REVERT TO DEFAULT
+            format_selector = (
+                f'best[height={selected_height}]/'
+                f'best[height>{selected_height}]/'
+                f'best[height<{selected_height}]/'
+                f'best'
+            )
+            print(f"[FORMAT] Requested: {selected_height}p, Selector: {format_selector}")
+    # --- NEW FORMAT LOGIC END ---
     
     # Use root ffmpeg path
     ffmpeg_path = FFMPEG_DIR / 'bin' / 'ffmpeg.exe'

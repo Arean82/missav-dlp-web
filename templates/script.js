@@ -217,7 +217,8 @@ document.getElementById('getInfoBtn').onclick = async () => {
         if (currentVideoInfo.formats && currentVideoInfo.formats.length > 0) {
             currentVideoInfo.formats.forEach(f => {
                 const option = document.createElement('option');
-                option.value = f.format_id;
+                //option.value = f.format_id;
+                option.value = f.height;
                 option.textContent = `${f.resolution}${f.filesize ? ` (${formatSize(f.filesize)})` : ''}`;
                 qualitySelect.appendChild(option);
             });
