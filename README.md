@@ -25,6 +25,12 @@ Built with `curl_cffi` and `yt-dlp` to bypass ISP blocking (SNI) and Cloudflare'
 - **📁 File Manager:** Browse, search, preview, and delete downloaded files directly from the web interface.
 - **📝 Download Logs:** Each download task has its own log file for troubleshooting.
 - **⚡ Sequential/Parallel Mode:** Choose between downloading one video at a time or multiple concurrently.
+- **🎯 Smart Resolution Fallback:** If your selected quality (e.g., 1080p) is unavailable, the app intelligently tries higher resolutions (1440p/2160p), then lower (720p/480p), and finally defaults to best available.
+- **📊 Download Metadata:** View the downloaded video's resolution, final file size, and exact time taken directly in the task list.
+- **⚡ Dynamic Parallel Downloads:** Adjust the number of concurrent download threads on-the-fly from settings. Excess threads are safely terminated without restarting the app.
+- **🔧 Custom FFmpeg Path:** Specify a custom FFmpeg binary directory in the web UI. The backend automatically verifies that `ffmpeg`, `ffprobe`, and `ffplay` exist before saving.
+- **🗑️ Clean History:** One-click button in the UI to completely wipe all downloaded files from the server.
+- **📄 Documentation Viewer:** Built-in modal to view localized README, SECURITY, and LICENSE files directly from the web interface.
 
 ## 🛠️ Installation & Usage
 
@@ -120,11 +126,13 @@ Settings are stored in `.settings.json` and can be modified via the web UI:
 
 | Setting                 | Description                        | Default                             |
 | ----------------------- | ---------------------------------- | ----------------------------------- |
-| Download Directory      | Where videos are saved             | `./downloads`                     |
-| Sequential Mode         | Download one video at a time       | `true`                            |
-| Delay Between Downloads | Seconds to wait between downloads  | `3`                               |
-| Default Quality         | Maximum resolution to download     | `best`                            |
-| Mirror Domains          | MissAV mirror domains for fallback | `missav.ai`, `missav.net`, etc. |
+| Download Directory      | Where videos are saved             | `./downloads`                       |
+| FFmpeg Bin Directory    | Custom path to FFmpeg binaries     | System PATH                        |
+| Max Concurrent Downloads| Number of parallel download threads| `1`                                |
+| Sequential Mode         | Download one video at a time       | `true`                              |
+| Delay Between Downloads | Seconds to wait between downloads  | `3`                                 |
+| Default Quality         | Maximum resolution to download     | `best`                              |
+| Mirror Domains          | MissAV mirror domains for fallback | `missav.ai`, `missav.net`, etc.     |
 
 ### Advanced Configuration
 
@@ -133,6 +141,8 @@ You can also edit `.settings.json` directly:
 ```json
 {
   "max_concurrent": 1,
+  "ffmpeg_path": "",
+  "filename_template": "[%(id)s] %(title).60s.%(ext)s",
   "filename_template": "[%(id)s] %(title).60s.%(ext)s",
   "spoofdpi_enabled": true,
   "video_quality": "best",
@@ -209,17 +219,19 @@ python app.py
 
 The application provides REST API endpoints:
 
-| Endpoint             | Method   | Description            |
-| -------------------- | -------- | ---------------------- |
-| `/api/info`        | POST     | Get video information  |
-| `/api/download`    | POST     | Add single download    |
-| `/api/batch`       | POST     | Add multiple downloads |
-| `/api/tasks`       | GET      | List all tasks         |
-| `/api/tasks/<id>`  | DELETE   | Cancel task            |
-| `/api/queue/stats` | GET      | Queue statistics       |
-| `/api/settings`    | GET/PUT  | Get/Update settings    |
-| `/api/files`       | GET      | List downloaded files  |
-| `/api/language`    | GET/POST | Get/Set language       |
+| Endpoint                  | Method   | Description            |
+| ------------------------- | -------- | ---------------------- |
+| `/api/info`               | POST     | Get video information  |
+| `/api/download`           | POST     | Add single download    |
+| `/api/batch`              | POST     | Add multiple downloads |
+| `/api/tasks`              | GET      | List all tasks         |
+| `/api/tasks/<id>`         | DELETE   | Cancel task            |
+| `/api/queue/stats`        | GET      | Queue statistics       |
+| `/api/settings`           | GET/PUT  | Get/Update settings    |
+| `/api/files`              | GET      | List downloaded files  |
+| `/api/language`           | GET/POST | Get/Set language       |
+| `/api/docs/<type>`        | GET      | Get localized documentation (readme, security, license) |
+| `/api/files/clean_history`| POST     | Delete all downloaded files                           |
 
 ## ⚠️ Disclaimer
 
@@ -265,6 +277,18 @@ This project is based on the excellent work by **[nerdnam](https://github.com/ne
 ---
 
 ## 📝 Changelog
+
+### Version 3.1
+
+- Added smart resolution fallback logic (Exact -> Higher -> Lower -> Default)
+- Added dynamic concurrent download scaling with safe thread termination
+- Added download metadata display (Resolution, Size, Time Taken)
+- Added custom FFmpeg path setting with backend file validation
+- Added 'Clean History' button to wipe downloaded files
+- Added localized documentation viewer (README, SECURITY, LICENSE)
+- Fixed "Get Info" crashing due to conflicting default yt-dlp extractors
+- Fixed downloaded filename/size not showing correctly post-merge
+- Fixed settings modal overflow on low-resolution monitors
 
 ### Version 3.0
 
