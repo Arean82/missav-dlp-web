@@ -156,38 +156,54 @@ def download_video(task_id, url, selected_format=None):
     tmpl = settings.get('filename_template', '[%(id)s] %(title).60s.%(ext)s')
     
     # Map resolution to height filter
-    resolution_map = {
-        '2160p': 2160,
-        '1440p': 1440,
-        '1080p': 1080,
-        '720p': 720,
-        '480p': 480,
-        '360p': 360,
-        '240p': 240,
-    }
-    
-    if selected_format:
-        # Extract resolution from format_id (e.g., 'hls-1080p' -> 1080)
-        selected_resolution = None
-        for res in resolution_map:
-            if res in selected_format:
-                selected_resolution = resolution_map[res]
-                break
+    def get_fallback_format_id(available_formats, selected_height):
+        priority_list = [2160, 1440, 1080, 720, 480, 360, 240]
         
-        if selected_resolution:
-            # Download same or HIGHER quality (>=)
-            format_selector = f'bestvideo[height>={selected_resolution}]+bestaudio/best[height>={selected_resolution}]/best'
-        else:
-            format_selector = 'bestvideo+bestaudio/best'
-    else:
-        quality = settings.get('video_quality', 'best')
-        if quality == 'best':
-            format_selector = 'bestvideo+bestaudio/best'
-        elif quality in resolution_map:
-            target_height = resolution_map[quality]
-            format_selector = f'bestvideo[height>={target_height}]+bestaudio/best[height>={target_height}]/best'
-        else:
-            format_selector = 'bestvideo+bestaudio/best'
+        # Map available formats to their heights
+        available_heights = {}
+        for f in available_formats:
+            h = f.get('height')
+            if h:
+                available_heights[h] = f.get('format_id')
+                
+        # If exact match exists, return it
+        if selected_height in available_heights:
+            return available_heights[selected_height]
+            
+        try:
+            start_idx = priority_list.index(selected_height)
+        except ValueError:
+            return 'best'
+            
+        # 1. Go UP the list (towards higher resolution)
+        for i in range(start_idx - 1, -1, -1):
+            h = priority_list[i]
+            if h in available_heights:
+                return available_heights[h]
+                
+        # 2. If reached top and failed, go DOWN the list (towards lower resolution)
+        for i in range(start_idx + 1, len(priority_list)):
+            h = priority_list[i]
+            if h in available_heights:
+                return available_heights[h]
+                
+        return 'best'
+
+    format_selector = 'best'
+    if selected_format:
+        match = re.search(r'(\d{3,4})', selected_format)
+        if match:
+            selected_height = int(match.group(1))
+            
+            # Extract formats to find the exact format_id to use
+            ydl_opts_check = {'quiet': True, 'no_warnings': True}
+            with yt_dlp.YoutubeDL(ydl_opts_check) as ydl_check:
+                ydl_check.add_info_extractor(MyCustomMissAV(settings=settings))
+                ydl_check.add_default_info_extractors()
+                info_check = ydl_check.extract_info(url, download=False)
+                
+            exact_format_id = get_fallback_format_id(info_check.get('formats', []), selected_height)
+            format_selector = exact_format_id
     
     # Use root ffmpeg path
     ffmpeg_path = FFMPEG_DIR / 'bin' / 'ffmpeg.exe'

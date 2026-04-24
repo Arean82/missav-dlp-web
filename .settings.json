@@ -2,13 +2,14 @@
   "max_concurrent": 1,
   "filename_template": "[%(id)s] %(title).60s.%(ext)s",
   "spoofdpi_enabled": true,
-  "video_quality": "best",
+  "video_quality": "480p",
   "mirrors": [
     "missav.ai",
     "missav.net",
     "missav123.com",
     "missav.com",
-    "missav.ws"
+    "missav.ws",
+    "missav.live"
   ],
   "download_dir": "C:\\Users\\user\\OneDrive\\Desktop\\python\\Scale\\missav-dlp-web\\downloads",
   "delay_between_downloads": 3,

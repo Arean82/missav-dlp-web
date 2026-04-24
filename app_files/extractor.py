@@ -119,7 +119,7 @@ class MyCustomMissAV(InfoExtractor):
                 final_formats.append({
                     'url': quality_url,
                     'ext': 'mp4',
-                    'format_id': f'hls-{quality_label}',
+                    'format_id': f'hls-{height}p' if height else f'hls-{quality_label}',
                     'height': height,
                     'quality': height or 0,
                     'protocol': 'm3u8_native',
