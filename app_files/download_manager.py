@@ -226,15 +226,20 @@ def download_video(task_id, url, selected_format=None):
         
         with yt_dlp.YoutubeDL(ydl_opts, auto_init=False) as ydl:
             ydl.add_info_extractor(MyCustomMissAV(settings=settings))
-            #ydl.add_default_info_extractors()
-            ydl.download([url])
+            # Do not add default extractors to prevent built-in MissAV extractor conflicts
+            # extract_info with download=True does both in one pass (no double API call)
+            info = ydl.extract_info(url, download=True)
         
-        # Search for downloaded file
-        for f in DOWNLOAD_DIR.iterdir():
-            if f.is_file() and (task_id in f.name or url.split('/')[-1] in f.name):
-                task['filename'] = f.name
-                task['filesize'] = f.stat().st_size
-                break
+        # Grab the exact final filename directly from yt-dlp's internal record
+        final_filepath = None
+        if info and info.get('requested_downloads'):
+            final_filepath = info['requested_downloads'][-1].get('filepath')
+            
+        if final_filepath:
+            fp = Path(final_filepath)
+            if fp.exists():
+                task['filename'] = fp.name
+                task['filesize'] = fp.stat().st_size
         
         # Calculate time taken
         download_end_time = time.time()
@@ -293,7 +298,20 @@ def start_workers(count=None):
         active_threads.append(t)
 
 def adjust_workers(new_count):
-    start_workers(new_count)
+    global active_threads
+    
+    # Clean up dead threads first
+    active_threads = [t for t in active_threads if t.is_alive()]
+    current_count = len(active_threads)
+    
+    if current_count < new_count:
+        # Need more threads
+        start_workers(new_count)
+    elif current_count > new_count:
+        # Need to kill excess threads. Send 'None' to trigger their built-in exit condition.
+        excess = current_count - new_count
+        for _ in range(excess):
+            download_queue.put(None)
 
 # Start initial workers
 start_workers()
