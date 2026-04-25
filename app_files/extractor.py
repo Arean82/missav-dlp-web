@@ -113,8 +113,24 @@ class MyCustomMissAV(InfoExtractor):
                 quality_url = f"https://surrit.com/{video_uuid}/{line}"
                 height = None
                 try:
-                    height = int(re.search(r'(\d+)', quality_label).group(1))
-                except:
+                    raw_height = int(re.search(r'(\d+)', quality_label).group(1))
+                    
+                    # Strict 7-tier normalization
+                    if raw_height <= 240:
+                        height = 240
+                    elif raw_height <= 360:   # Catches 320p, 352p, etc.
+                        height = 360
+                    elif raw_height <= 540:   # Catches 474p, 476p, 528p, etc.
+                        height = 480
+                    elif raw_height <= 720:   # Catches weird 680p, etc.
+                        height = 720
+                    elif raw_height <= 1080:  # Catches 1010p, etc.
+                        height = 1080
+                    elif raw_height <= 1440:
+                        height = 1440
+                    else:
+                        height = 2160
+                except (AttributeError, TypeError):
                     pass
                 final_formats.append({
                     'url': quality_url,
