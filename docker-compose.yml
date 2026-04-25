@@ -5,8 +5,10 @@ services:
     ports:
       - '55000:5000'
     restart: unless-stopped
+    environment:
+      - FLASK_HOST=0.0.0.0  # Tells app.py to open to Docker network
     volumes:
-      # Changed from /downloads to /app/downloads
       - /home/main/downloads:/app/downloads
-      # Added this so your task logs don't disappear when container restarts
       - /home/main/logs:/app/logs
+
+      
