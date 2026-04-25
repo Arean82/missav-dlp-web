@@ -1,4 +1,3 @@
-let currentVideoInfo = null;
 let cachedSettings = null;
 let currentTranslations = {};
 
@@ -112,6 +111,9 @@ async function fetchTasks() {
             if (t.status === 'Completed') {
                 cls = 'completed';
                 statusText = _('completed');
+            } else if (t.status === 'Cancelled') {
+                cls = 'cancelled';
+                statusText = _('cancelled');
             } else if (t.status && t.status.startsWith('Error')) {
                 cls = 'error';
                 statusText = _('failed');
@@ -195,84 +197,35 @@ async function deleteFile(name) {
     }
 }
 
-// Get Info
-document.getElementById('getInfoBtn').onclick = async () => {
+// Start Download (Direct to Queue)
+document.getElementById('startDownloadBtn').onclick = async () => {
     const url = document.getElementById('urlInput').value.trim();
     if (!url) { alert(_('enter_url_or_code')); return; }
     
-    document.getElementById('getInfoBtn').disabled = true;
-    document.getElementById('getInfoBtn').innerHTML = `🔍 ${_('loading')}`;
+    const btn = document.getElementById('startDownloadBtn');
+    btn.disabled = true;
+    btn.innerHTML = `⬇️ ${_('loading')}`;
     
     try {
-        const res = await fetch('/api/info', {
+        const res = await fetch('/api/download', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ url })
+            body: JSON.stringify({ url: url }) // Sends directly to queue, no format selected
         });
-        const data = await res.json();
-        if (data.status !== 'success') {
-            alert(_('failed_get_info') + ': ' + (data.message || 'Unknown error'));
-            return;
-        }
         
-        currentVideoInfo = data.info;
-        document.getElementById('videoTitle').innerText = currentVideoInfo.title || '-';
-        document.getElementById('videoCode').innerText = currentVideoInfo.id || '-';
-        document.getElementById('videoDuration').innerText = currentVideoInfo.duration_string || '-';
-        
-        const warning = document.getElementById('previewWarning');
-        if (currentVideoInfo.is_preview) {
-            warning.classList.remove('hidden');
+        if (res.ok) {
+            document.getElementById('urlInput').value = ''; // Clear input box
+            fetchTasks();
+            alert(_('added_to_queue'));
         } else {
-            warning.classList.add('hidden');
+            alert(_('error'));
         }
-        
-        const qualitySelect = document.getElementById('qualitySelect');
-        qualitySelect.innerHTML = '';
-        if (currentVideoInfo.formats && currentVideoInfo.formats.length > 0) {
-            currentVideoInfo.formats.forEach(f => {
-                const option = document.createElement('option');
-                //option.value = f.format_id;
-                option.value = f.height;
-                option.textContent = `${f.resolution}${f.filesize ? ` (${formatSize(f.filesize)})` : ''}`;
-                qualitySelect.appendChild(option);
-            });
-        } else {
-            qualitySelect.innerHTML = '<option value="best">Best Quality</option>';
-        }
-        
-        document.getElementById('infoCard').style.display = 'block';
-    } catch(e) { alert('Error: ' + e.message); }
-    finally {
-        document.getElementById('getInfoBtn').disabled = false;
-        document.getElementById('getInfoBtn').innerHTML = `🔍 ${_('get_info')}`;
+    } catch(e) { 
+        alert('Error: ' + e.message); 
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `⬇️ <span data-i18n="download_now">Download</span>`;
     }
-};
-
-// Download Now
-document.getElementById('downloadBtn').onclick = async () => {
-    if (!currentVideoInfo) return;
-    const format = document.getElementById('qualitySelect').value;
-    await fetch('/api/download', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: currentVideoInfo.url, format })
-    });
-    fetchTasks();
-    alert(_('added_to_queue'));
-};
-
-// Add to Queue
-document.getElementById('addQueueBtn').onclick = async () => {
-    if (!currentVideoInfo) return;
-    const format = document.getElementById('qualitySelect').value;
-    await fetch('/api/download', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: currentVideoInfo.url, format })
-    });
-    fetchTasks();
-    alert(_('added_to_queue'));
 };
 
 // Batch
@@ -309,7 +262,8 @@ document.getElementById('cleanBtn').onclick = async () => {
 };
 
 document.getElementById('cleanHistoryBtn').onclick = async () => {
-    if (confirm('Are you sure you want to delete ALL downloaded files?')) {
+    //if (confirm('Are you sure you want to delete ALL downloaded files?')) {
+    if (confirm(_('clean_history_confirm'))) {
         const res = await fetch('/api/files/clean_history', { method: 'POST' });
         const data = await res.json();
         alert(`Deleted ${data.deleted} files.`);
@@ -455,7 +409,7 @@ docsSelect.onchange = async (e) => {
     if (!docType) return;
 
     docsModalTitle.textContent = docType.toUpperCase();
-    docsContent.textContent = 'Loading...';
+    ddocsContent.textContent = _('loading');
     docsModal.style.display = 'flex';
 
     try {
@@ -464,10 +418,10 @@ docsSelect.onchange = async (e) => {
         if (data.status === 'success') {
             docsContent.innerHTML = marked.parse(data.content);
         } else {
-            docsContent.textContent = 'Failed to load document.';
+            docsContent.textContent = _('failed_load_doc');
         }
     } catch(e) {
-        docsContent.textContent = 'Error loading document.';
+        docsContent.textContent = _('error');
     }
     
     // Reset dropdown back to placeholder

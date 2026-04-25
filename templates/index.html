@@ -32,7 +32,7 @@
     <div class="card">
         <div class="url-bar">
             <input type="text" id="urlInput" data-i18n-placeholder="url_placeholder" placeholder="Enter URL or JAV code (e.g., ABP-123)">
-            <button id="getInfoBtn">🔍 <span data-i18n="get_info">Get Info</span></button>
+            <button id="startDownloadBtn">⬇️ <span data-i18n="download_now">Download</span></button>
             <button id="batchBtn" class="btn-secondary">📋 <span data-i18n="batch_add">Batch Add</span></button>
         </div>
         <div id="batchPanel" class="hidden">
@@ -41,24 +41,6 @@
                 <button id="addBatchBtn">➕ <span data-i18n="add_all">Add All to Queue</span></button>
                 <button id="cancelBatchBtn" class="btn-secondary"><span data-i18n="cancel">Cancel</span></button>
             </div>
-        </div>
-    </div>
-
-    <!-- Video Info -->
-    <div class="card" id="infoCard" style="display:none">
-        <h3><span data-i18n="video_info">Video Information</span></h3>
-
-        <p id="videoTitle" style="font-weight:bold; word-break:break-all;">-</p>
-        <p><span data-i18n="code">Code</span>: <span id="videoCode">-</span> | <span data-i18n="duration">Duration</span>: <span id="videoDuration">-</span></p>
-
-        <div id="previewWarning" class="warning hidden"><span data-i18n="preview_warning">⚠️ Preview video (short version)</span></div>
-        <div class="quality-row">
-            <label><span data-i18n="quality">Quality</span>:</label>
-            <select id="qualitySelect" class="quality-select"></select>
-        </div>
-        <div class="button-group">
-            <button id="downloadBtn">⬇ <span data-i18n="download_now">Download Now</span></button>
-            <button id="addQueueBtn" class="btn-secondary">➕ <span data-i18n="add_to_queue">Add to Queue</span></button>
         </div>
     </div>
 

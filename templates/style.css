@@ -125,6 +125,11 @@ button:hover {
     background: #e65100;
 }
 
+.task-card.cancelled {
+    border-left: 4px solid #ff9800;
+    background: rgba(255, 152, 0, 0.1);
+}
+
 .task-top {
     display: flex;
     justify-content: space-between;
@@ -305,3 +310,4 @@ button:hover {
     outline: none;
     border-color: #00d9ff;
 }
+

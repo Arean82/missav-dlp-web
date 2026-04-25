@@ -54,9 +54,12 @@ def format_duration(seconds):
 
 def get_video_info(url):
     try:
+        settings = load_settings()
+        
         if is_jav_code(url):
             mirrors = settings.get('mirrors', [])
             url = jav_code_to_url(url, mirrors[0] if mirrors else 'missav.ws')
+            print(f"[DEBUG] JAV URL generated: {url}", flush=True)
         
         ydl_opts = {
             'quiet': True,
@@ -133,6 +136,10 @@ def add_batch(urls):
     return task_ids
 
 def download_video(task_id, url, selected_format=None):
+    # 1. Fresh settings for every single download
+    settings = load_settings()
+    DOWNLOAD_DIR = Path(settings.get('download_dir', str(DOWNLOADS_DIR)))
+    
     task = tasks.get(task_id)
     if not task:
         return
@@ -144,9 +151,10 @@ def download_video(task_id, url, selected_format=None):
     
     task_logger.info(f"Starting download: {url}")
     
+    # 2. Progress hook (strictly inside the function)
     def progress_hook(d):
         if task_id not in tasks:
-            return
+            raise DownloadCancelled("Cancelled")
         if d['status'] == 'downloading':
             p = d.get('_percent_str', '0%')
             p_clean = re.sub(r'\x1b[^m]*m', '', p).strip().replace('%', '')
@@ -154,7 +162,7 @@ def download_video(task_id, url, selected_format=None):
                 task['progress'] = float(p_clean)
                 task['stage'] = 'Downloading'
                 task_logger.info(f"Progress: {p_clean}%")
-            except:
+            except (ValueError, TypeError):
                 task['progress'] = 0
         elif d['status'] == 'finished':
             task['stage'] = 'Merging'
@@ -163,15 +171,14 @@ def download_video(task_id, url, selected_format=None):
     tmpl = settings.get('filename_template', '[%(id)s] %(title).60s.%(ext)s')
     
     # --- NEW FORMAT LOGIC START ---
-    # Use manual selection, or fallback to default quality from settings.json (for batch)
     effective_format = selected_format or settings.get('video_quality', 'best')
     
     format_selector = 'best'
+    match = None  # Initialize to prevent errors if not matched
     if effective_format and effective_format != 'best':
         match = re.search(r'(\d{3,4})', str(effective_format))
         if match:
             selected_height = int(match.group(1))
-            # 1. Exact match -> 2. Go UP -> 3. Go DOWN -> 4. REVERT TO DEFAULT
             format_selector = (
                 f'best[height={selected_height}]/'
                 f'best[height>{selected_height}]/'
@@ -183,7 +190,7 @@ def download_video(task_id, url, selected_format=None):
      
     # Record the resolution for the UI
     if effective_format and effective_format != 'best' and match:
-        task['resolution'] = f"{selected_height}p"
+        task['resolution'] = f"{match.group(1)}p"
     else:
         task['resolution'] = "Best"
    
@@ -193,7 +200,7 @@ def download_video(task_id, url, selected_format=None):
         ext = '.exe' if os.name == 'nt' else ''
         ffmpeg_path = str(Path(ffmpeg_custom_dir) / f'ffmpeg{ext}')
     else:
-        ffmpeg_path = 'ffmpeg' # Fallback to system PATH
+        ffmpeg_path = 'ffmpeg'
     
     ydl_opts = {
         'outtmpl': str(DOWNLOAD_DIR / tmpl),
@@ -221,16 +228,12 @@ def download_video(task_id, url, selected_format=None):
         
         task_logger.info(f"Format selector: {format_selector}")
         
-        # Start timer
         download_start_time = time.time()
         
         with yt_dlp.YoutubeDL(ydl_opts, auto_init=False) as ydl:
             ydl.add_info_extractor(MyCustomMissAV(settings=settings))
-            # Do not add default extractors to prevent built-in MissAV extractor conflicts
-            # extract_info with download=True does both in one pass (no double API call)
             info = ydl.extract_info(url, download=True)
         
-        # Grab the exact final filename directly from yt-dlp's internal record
         final_filepath = None
         if info and info.get('requested_downloads'):
             final_filepath = info['requested_downloads'][-1].get('filepath')
@@ -241,7 +244,6 @@ def download_video(task_id, url, selected_format=None):
                 task['filename'] = fp.name
                 task['filesize'] = fp.stat().st_size
         
-        # Calculate time taken
         download_end_time = time.time()
         task['time_taken'] = round(download_end_time - download_start_time, 2)
         
@@ -250,6 +252,14 @@ def download_video(task_id, url, selected_format=None):
         task['progress'] = 100
         task_logger.info(f"Download completed successfully in {task['time_taken']}s")
         
+    # 3. CATCH CANCELLATION FIRST
+    except DownloadCancelled:
+        task_logger.info("Download cancelled by user")
+        task['status'] = 'Cancelled'
+        task['stage'] = 'Cancelled'
+        task['progress'] = 0
+        
+    # 4. CATCH ALL OTHER ERRORS SECOND
     except Exception as e:
         error_msg = str(e)[:200]
         task_logger.error(f"Download failed: {error_msg}")
@@ -276,8 +286,10 @@ def worker():
         with queue_lock:
             active_downloads -= 1
         
-        if settings.get('sequential_mode', True):
-            time.sleep(settings.get('delay_between_downloads', 3))
+        # Load fresh settings to check delay/sequential mode
+        worker_settings = load_settings()
+        if worker_settings.get('sequential_mode', True):
+            time.sleep(worker_settings.get('delay_between_downloads', 3))
         
         download_queue.task_done()
 
@@ -286,7 +298,7 @@ active_threads = []
 def start_workers(count=None):
     global active_threads
     if count is None:
-        count = settings.get('max_concurrent', 1)
+        count = load_settings().get('max_concurrent', 1)
     
     # Clean up dead threads from the list
     active_threads = [t for t in active_threads if t.is_alive()]

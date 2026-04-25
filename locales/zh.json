@@ -2,7 +2,6 @@
   "app_title": "MissAV下载器",
   "settings": "设置",
   "url_placeholder": "输入URL或JAV代码（例如：ABP-123）",
-  "get_info": "获取信息",
   "batch_add": "批量添加",
   "batch_placeholder": "每行一个URL或JAV代码...",
   "add_all": "全部添加到队列",
@@ -48,5 +47,8 @@
   "failed_get_info": "获取视频信息失败",
   "batch_added": "已添加{count}个视频到队列",
   "task_cancelled": "任务已取消",
-  "file_deleted": "文件已删除"
+  "file_deleted": "文件已删除",
+  "cancelled": "已取消",
+  "clean_history_confirm": "确定要删除所有已下载的文件吗？",
+  "failed_load_doc": "加载文档失败。"
 }

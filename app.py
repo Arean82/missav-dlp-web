@@ -274,7 +274,7 @@ def get_doc(doc_type):
     base_filenames = {
         'readme': 'README.md',
         'security': 'SECURITY.md',
-        'license': 'LICENSE'
+        'license': 'License'
     }
 
     target_file = ROOT_DIR / base_filenames[doc_type]
@@ -306,6 +306,7 @@ def get_log(task_id):
 if __name__ == '__main__':
     import webbrowser
     import threading
+    import logging 
 
     def open_browser():
         webbrowser.open('http://localhost:5000')
@@ -317,6 +318,11 @@ if __name__ == '__main__':
     print(f"Open: http://localhost:5000")
     print(f"{'='*50}\n")
     threading.Timer(1.5, open_browser).start()
+
+    # Disable werkzeug logging
+    log = logging.getLogger('werkzeug')
+    log.setLevel(logging.WARNING)
+
     #app.run(host='0.0.0.0', port=5000, debug=False)
     app.run(host='127.0.0.1', port=5000, debug=False)
     

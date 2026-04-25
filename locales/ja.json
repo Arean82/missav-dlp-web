@@ -2,7 +2,6 @@
   "app_title": "MissAVダウンローダー",
   "settings": "設定",
   "url_placeholder": "URLまたはJAVコードを入力（例：ABP-123）",
-  "get_info": "情報取得",
   "batch_add": "一括追加",
   "batch_placeholder": "1行に1つずつURLまたはJAVコードを入力...",
   "add_all": "すべてキューに追加",
@@ -48,5 +47,8 @@
   "failed_get_info": "ビデオ情報の取得に失敗しました",
   "batch_added": "{count}個のビデオをキューに追加しました",
   "task_cancelled": "タスクがキャンセルされました",
-  "file_deleted": "ファイルが削除されました"
+  "file_deleted": "ファイルが削除されました",
+  "cancelled": "キャンセル済み",
+  "clean_history_confirm": "ダウンロードしたすべてのファイルを削除してもよろしいですか？",
+  "failed_load_doc": "ドキュメントの読み込みに失敗しました。"
 }

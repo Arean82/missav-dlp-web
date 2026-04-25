@@ -7,9 +7,9 @@ def is_jav_code(text):
     return bool(pattern.match(text.strip().upper()))
 
 def jav_code_to_url(code, mirror='missav.ws'):
-    code = code.strip().upper()
+    code = code.strip().lower()  # <-- Changed from .upper() to .lower()
     if is_jav_code(code):
-        return f"https://{mirror}/ko/{code}"
+        return f"https://{mirror}/{code}" # <-- Removed hardcoded /ko/
     return None
 
 def format_duration(seconds):

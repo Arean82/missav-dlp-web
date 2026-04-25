@@ -4,11 +4,12 @@ import sys
 import os
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
-# Add hidden imports for all necessary modules
 hidden_imports = [
     'flask',
     'yt_dlp',
     'curl_cffi',
+    'curl_cffi.const',
+    'curl_cffi.requests.impersonate',
     'waitress',
     'jinja2',
     'markupsafe',
@@ -22,16 +23,8 @@ hidden_imports = [
     'brotli',
     'brotli._brotli',
     'charset_normalizer',
-    'charset_normalizer.md__mypyc',
     'idna',
     'urllib3',
-    'urllib3.poolmanager',
-    'urllib3.connectionpool',
-    'requests',
-    'requests.models',
-    'requests.sessions',
-    'requests.adapters',
-    'http.cookiejar',
     'json',
     're',
     'time',
@@ -46,15 +39,26 @@ hidden_imports = [
     'webbrowser',
 ]
 
-# Collect data files
 datas = [
     ('templates', 'templates'),
     ('locales', 'locales'),
     ('app_files', 'app_files'),
-    ('spoofdpi.exe', '.'),  # Include spoofdpi.exe in root
+    ('README.md', '.'),
+    ('SECURITY.md', '.'),
+    ('LICENSE', '.'),
 ]
 
-# If you have ffmpeg folder
+for lang in ['ko', 'ja', 'zh']:
+    readme_file = f'README.{lang}.md'
+    if os.path.exists(readme_file):
+        datas.append((readme_file, '.'))
+
+# Collect curl_cffi runtime data
+datas += collect_data_files('curl_cffi')
+
+if os.path.exists('spoofdpi.exe'):
+    datas.append(('spoofdpi.exe', '.'))
+
 if os.path.exists('ffmpeg'):
     datas.append(('ffmpeg', 'ffmpeg'))
 
@@ -73,6 +77,7 @@ a = Analysis(
 
 pyz = PYZ(a.pure)
 
+# ONFILE MODE: a.binaries and a.datas go INSIDE the exe block
 exe = EXE(
     pyz,
     a.scripts,
@@ -84,24 +89,11 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=True,  # Console window for debugging
+    console=False,  # Set to False to hide the black terminal window
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=None,  # Add 'assets/app.ico' if you have one
-)
-
-# Create a COLLECTION for one-folder mode (optional)
-coll = COLLECT(
-    exe,
-    a.binaries,
-    a.datas,
-    strip=False,
-    upx=True,
-    upx_exclude=[],
-    name='MissAV_Downloader',
+    icon=None,
 )

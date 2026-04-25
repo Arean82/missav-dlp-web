@@ -2,7 +2,6 @@
   "app_title": "MissAV Downloader",
   "settings": "Settings",
   "url_placeholder": "Enter URL or JAV code (e.g., ABP-123)",
-  "get_info": "Get Info",
   "batch_add": "Batch Add",
   "batch_placeholder": "Enter one URL or JAV code per line...",
   "add_all": "Add All to Queue",
@@ -48,5 +47,8 @@
   "failed_get_info": "Failed to get video info",
   "batch_added": "Added {count} videos to queue",
   "task_cancelled": "Task cancelled",
-  "file_deleted": "File deleted"
+  "file_deleted": "File deleted",
+  "cancelled": "Cancelled",
+  "clean_history_confirm": "Are you sure you want to delete ALL downloaded files?",
+  "failed_load_doc": "Failed to load document."
 }

@@ -2,7 +2,6 @@
   "app_title": "MissAV 다운로더",
   "settings": "설정",
   "url_placeholder": "URL 또는 JAV 코드 입력 (예: ABP-123)",
-  "get_info": "정보 가져오기",
   "batch_add": "일괄 추가",
   "batch_placeholder": "한 줄에 하나씩 URL 또는 JAV 코드 입력...",
   "add_all": "모두 큐에 추가",
@@ -48,5 +47,8 @@
   "failed_get_info": "비디오 정보를 가져오는데 실패했습니다",
   "batch_added": "{count}개의 비디오가 큐에 추가됨",
   "task_cancelled": "작업이 취소되었습니다",
-  "file_deleted": "파일이 삭제되었습니다"
+  "file_deleted": "파일이 삭제되었습니다",
+  "cancelled": "취소됨",
+  "clean_history_confirm": "다운로드한 모든 파일을 삭제하시겠습니까?",
+  "failed_load_doc": "문서를 로드하는 데 실패했습니다."
 }
