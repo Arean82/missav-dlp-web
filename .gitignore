@@ -1,9 +1,24 @@
-__pycache__/*
+# Python
+__pycache__/
 app_files/__pycache__/*
-logs/*
-startup_resources/__pycache__/*
-webservice/app_files/__pycache__/*
-1.txt
+*.pyc
+*.pyo
+*.spec
+
+# Build files
+*.egg-info/
+*.egg
 build/*
 dist/*
-downloads/*
+
+# App Data
+downloads/
+logs/
+.settings.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+1.txt

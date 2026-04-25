@@ -1,0 +1,35 @@
+# Version control
+.git
+.github
+.gitignore
+
+# Docker files
+.dockerignore
+docker-compose.yml
+Dockerfile
+
+# App Data (Generated at runtime in container)
+downloads/
+logs/
+.settings.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Build/Spec files
+*.spec
+build/
+dist/
+*.egg-info/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Misc
+1.txt
+
+# Crucial: Do NOT copy the Windows binary into the Linux container
+spoofdpi.exe
