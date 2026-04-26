@@ -409,7 +409,7 @@ docsSelect.onchange = async (e) => {
     if (!docType) return;
 
     docsModalTitle.textContent = docType.toUpperCase();
-    ddocsContent.textContent = _('loading');
+    docsContent.textContent = _('loading');
     docsModal.style.display = 'flex';
 
     try {
