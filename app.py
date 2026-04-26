@@ -239,9 +239,20 @@ def list_files():
 # Allow downloading of files in download directory
 @app.route('/api/files/<path:filename>/download', methods=['GET'])
 def download_file(filename):
-    fp = DOWNLOAD_DIR / filename
+    fp = (DOWNLOAD_DIR / filename).resolve()
+    if not fp.is_relative_to(DOWNLOAD_DIR.resolve()) or not fp.exists():
+        return jsonify({"status": "error"}), 404
+    return send_file(fp, as_attachment=True)
+
+# Allow deletion of files in download directory
+@app.route('/api/files/<path:filename>', methods=['DELETE'])
+def delete_file(filename):
+    fp = (DOWNLOAD_DIR / filename).resolve()
+    if not fp.is_relative_to(DOWNLOAD_DIR.resolve()):
+        return jsonify({"status": "error"}), 403
     if fp.exists():
-        return send_file(fp, as_attachment=True)
+        fp.unlink()
+        return jsonify({"status": "success"})
     return jsonify({"status": "error"}), 404
 
 # Allow cleaning of all files in download directory (use with caution)
@@ -254,15 +265,6 @@ def clean_history():
                 f.unlink()
                 deleted_count += 1
     return jsonify({"status": "success", "deleted": deleted_count})
-
-# Allow deletion of files in download directory
-@app.route('/api/files/<path:filename>', methods=['DELETE'])
-def delete_file(filename):
-    fp = DOWNLOAD_DIR / filename
-    if fp.exists():
-        fp.unlink()
-        return jsonify({"status": "success"})
-    return jsonify({"status": "error"}), 404
 
 # Documentation routes
 @app.route('/api/docs/<doc_type>', methods=['GET'])
@@ -323,6 +325,7 @@ if __name__ == '__main__':
     log = logging.getLogger('werkzeug')
     log.setLevel(logging.WARNING)
 
-    #app.run(host='0.0.0.0', port=5000, debug=False)
-    app.run(host='127.0.0.1', port=5000, debug=False)
+    # Use 0.0.0.0 for Docker (via env var), or 127.0.0.1 for safe local desktop use
+    host = os.environ.get('FLASK_HOST', '127.0.0.1')
+    app.run(host=host, port=5000, debug=False)
     
