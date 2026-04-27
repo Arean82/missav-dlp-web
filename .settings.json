@@ -14,5 +14,6 @@
   "download_dir": "C:\\Users\\user\\OneDrive\\Desktop\\python\\Scale\\missav-dlp-web\\downloads",
   "delay_between_downloads": 3,
   "max_retries": 3,
-  "sequential_mode": true
+  "sequential_mode": true,
+  "ffmpeg_path": "C:\\Users\\user\\OneDrive\\Desktop\\python\\Scale\\missav-dlp-web\\ffmpeg\\bin"
 }
