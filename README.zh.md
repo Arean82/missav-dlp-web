@@ -31,7 +31,7 @@
 - **🔧 自定义 FFmpeg 路径：** 可在 Web UI 中指定 FFmpeg 二进制目录，保存前会自动验证 `ffmpeg`、`ffprobe` 和 `ffplay` 是否存在。
 - **🗑️ 清理历史：** UI 中提供一键按钮，用于完全删除服务器上的所有下载文件。
 - **📄 文档查看器：** 内置弹窗，可直接查看本地化的 README、SECURITY 和 LICENSE 文件。
-```
+- **🔗 自定义URL爬虫：** 输入系列、厂商或搜索URL，选择筛选器，选择要抓取的页数，然后直接从结果中选择视频下载。
 
 ## 🛠️ 安装与使用
 
@@ -177,6 +177,15 @@ missav-dlp-web/
 - 清理已完成任务或清空等待队列
 - 在 Downloads 区域浏览和管理已下载文件
 
+### 自定义URL爬虫
+
+1. 输入MissAV系列、厂商或搜索URL
+2. 点击“Custom”按钮
+3. 从列表中选择筛选器（或使用“All”）
+4. 选择要抓取的页数
+5. 从结果列表中选择视频
+6. 点击“Download Selected”添加到队列
+
 ## 🔧 故障排除
 
 | 问题                   | 解决方案                                                                 |
@@ -233,6 +242,8 @@ python app.py
 | `/api/language`            | GET/POST | 获取/设置语言                            |
 | `/api/docs/<type>`         | GET      | 获取本地化文档（readme, security, license） |
 | `/api/files/clean_history` | POST     | 删除所有下载文件                           |
+| `/api/crawl`              | POST     | 使用筛选器/分页从URL抓取视频 |
+| `/api/crawl/filters`      | POST     | 获取URL可用的筛选器 |
 
 ## ⚠️ 免责声明
 

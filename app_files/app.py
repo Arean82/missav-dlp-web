@@ -13,6 +13,8 @@ import uuid
 from pathlib import Path
 from flask import Flask, request, render_template, jsonify, send_file, session, make_response
 
+from .crawler import scrape_videos, get_filters
+
 # Relative imports since app.py is inside app_files
 from .paths import ROOT_DIR, DOWNLOADS_DIR, SETTINGS_FILE
 from .download_manager import (
@@ -313,3 +315,49 @@ def get_log(task_id):
         with open(log_file, 'r', encoding='utf-8') as f:
             return jsonify({"status": "success", "log": f.read()})
     return jsonify({"status": "error"}), 404
+
+# Crawler route to extract video info from a given URL with optional filter and pagination
+@app.route('/api/crawl', methods=['POST'])
+def crawl():
+    data = request.json
+    url = data.get('url', '').strip()
+    selected_filter = data.get('filter', None)
+    pages = data.get('pages', None)
+    
+    if not url:
+        return jsonify({"status": "error", "message": "URL required"}), 400
+    
+    try:
+        result = scrape_videos(url, selected_filter, pages)
+        
+        if result is None:
+            return jsonify({"status": "error", "message": "Failed to extract videos"}), 500
+        
+        return jsonify({
+            "status": "success",
+            "videos": result['videos'],
+            "max_pages": result['max_pages'],
+            "count": len(result['videos'])
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
+# New API route to get available filters for a given URL
+@app.route('/api/crawl/filters', methods=['POST'])
+def crawl_filters():
+    data = request.json
+    url = data.get('url', '').strip()
+    
+    if not url:
+        return jsonify({"status": "error", "message": "URL required"}), 400
+    
+    try:
+        result = get_filters(url)
+        return jsonify({
+            "status": "success",
+            "filters": result['filters'],
+            "current_filter": result['current_filter'],
+            "clean_base_url": result['clean_base_url']
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500

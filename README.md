@@ -31,6 +31,7 @@ Built with `curl_cffi` and `yt-dlp` to bypass ISP blocking (SNI) and Cloudflare'
 - **🔧 Custom FFmpeg Path:** Specify a custom FFmpeg binary directory in the web UI. The backend automatically verifies that `ffmpeg`, `ffprobe`, and `ffplay` exist before saving.
 - **🗑️ Clean History:** One-click button in the UI to completely wipe all downloaded files from the server.
 - **📄 Documentation Viewer:** Built-in modal to view localized README, SECURITY, and LICENSE files directly from the web interface.
+- **🔗 Custom URL Crawler:** Enter a series, maker, or search URL, select a filter, choose how many pages to scrape, and batch select videos to download directly from the results.
 
 ## 🛠️ Installation & Usage
 
@@ -124,15 +125,15 @@ To add a new language:
 
 Settings are stored in `.settings.json` and can be modified via the web UI:
 
-| Setting                 | Description                        | Default                             |
-| ----------------------- | ---------------------------------- | ----------------------------------- |
-| Download Directory      | Where videos are saved             | `./downloads`                       |
-| FFmpeg Bin Directory    | Custom path to FFmpeg binaries     | System PATH                        |
-| Max Concurrent Downloads| Number of parallel download threads| `1`                                |
-| Sequential Mode         | Download one video at a time       | `true`                              |
-| Delay Between Downloads | Seconds to wait between downloads  | `3`                                 |
-| Default Quality         | Maximum resolution to download     | `best`                              |
-| Mirror Domains          | MissAV mirror domains for fallback | `missav.ai`, `missav.net`, etc.     |
+| Setting                  | Description                         | Default                             |
+| ------------------------ | ----------------------------------- | ----------------------------------- |
+| Download Directory       | Where videos are saved              | `./downloads`                     |
+| FFmpeg Bin Directory     | Custom path to FFmpeg binaries      | System PATH                         |
+| Max Concurrent Downloads | Number of parallel download threads | `1`                               |
+| Sequential Mode          | Download one video at a time        | `true`                            |
+| Delay Between Downloads  | Seconds to wait between downloads   | `3`                               |
+| Default Quality          | Maximum resolution to download      | `best`                            |
+| Mirror Domains           | MissAV mirror domains for fallback  | `missav.ai`, `missav.net`, etc. |
 
 ### Advanced Configuration
 
@@ -175,6 +176,15 @@ You can also edit `.settings.json` directly:
 - Cancel individual downloads with the ✕ button
 - Clean completed tasks or clear waiting queue
 - Browse and manage downloaded files in the Downloads section
+
+### Custom URL Crawler
+
+1. Enter a MissAV series, maker, or search URL
+2. Click the "Custom" button
+3. Select a filter from the list (or use "All")
+4. Choose how many pages to scrape
+5. Select videos from the results list
+6. Click "Download Selected" to add them to the queue
 
 ## 🔧 Troubleshooting
 
@@ -219,19 +229,21 @@ python app.py
 
 The application provides REST API endpoints:
 
-| Endpoint                  | Method   | Description            |
-| ------------------------- | -------- | ---------------------- |
-| `/api/info`               | POST     | Get video information  |
-| `/api/download`           | POST     | Add single download    |
-| `/api/batch`              | POST     | Add multiple downloads |
-| `/api/tasks`              | GET      | List all tasks         |
-| `/api/tasks/<id>`         | DELETE   | Cancel task            |
-| `/api/queue/stats`        | GET      | Queue statistics       |
-| `/api/settings`           | GET/PUT  | Get/Update settings    |
-| `/api/files`              | GET      | List downloaded files  |
-| `/api/language`           | GET/POST | Get/Set language       |
-| `/api/docs/<type>`        | GET      | Get localized documentation (readme, security, license) |
-| `/api/files/clean_history`| POST     | Delete all downloaded files                           |
+| Endpoint                     | Method   | Description                                             |
+| ---------------------------- | -------- | ------------------------------------------------------- |
+| `/api/info`                | POST     | Get video information                                   |
+| `/api/download`            | POST     | Add single download                                     |
+| `/api/batch`               | POST     | Add multiple downloads                                  |
+| `/api/tasks`               | GET      | List all tasks                                          |
+| `/api/tasks/<id>`          | DELETE   | Cancel task                                             |
+| `/api/queue/stats`         | GET      | Queue statistics                                        |
+| `/api/settings`            | GET/PUT  | Get/Update settings                                     |
+| `/api/files`               | GET      | List downloaded files                                   |
+| `/api/language`            | GET/POST | Get/Set language                                        |
+| `/api/docs/<type>`         | GET      | Get localized documentation (readme, security, license) |
+| `/api/files/clean_history` | POST     | Delete all downloaded files                             |
+| `/api/crawl`               | POST     | Scrape videos from a URL with filter/pagination |
+| `/api/crawl/filters`       | POST     | Get available filters for a URL |
 
 ## ⚠️ Disclaimer
 

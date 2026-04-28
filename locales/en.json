@@ -50,5 +50,32 @@
   "file_deleted": "File deleted",
   "cancelled": "Cancelled",
   "clean_history_confirm": "Are you sure you want to delete ALL downloaded files?",
-  "failed_load_doc": "Failed to load document."
+  "failed_load_doc": "Failed to load document.",
+
+  "custom": "Custom",
+  "custom_list": "Custom List",
+  "fetching": "Fetching videos...",
+  "fetching_filters": "Loading filters...",
+  "title": "Title",
+  "link": "Link",
+  "no_videos": "No videos found",
+  "select_none": "Select None",
+  "download_selected": "Download Selected",
+  "enter_url_first": "Please enter a URL first",
+  "found_count": "Found {count} videos",
+  "select_one_video": "Please select at least one video",
+  "filter_select": "Select Filter",
+  "pages_input": "Pages to scrape",
+  "pages_placeholder": "Enter number or leave empty for all",
+  "start_scrape": "Start Scraping",
+
+  "select_filter": "Select Filter",
+  "next": "Next",
+  "select_pages": "Select Pages",
+  "total_pages": "Total Pages Available",
+  "pages_to_scrape": "Pages to Scrape",
+  "no_filters": "No filters found",
+  "select_filter_first": "Please select a filter first",
+  "unknown": "Unknown",
+  "scraping_pages": "Scraping {pages} pages..."
 }

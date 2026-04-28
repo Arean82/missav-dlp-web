@@ -34,12 +34,49 @@
             <input type="text" id="urlInput" data-i18n-placeholder="url_placeholder" placeholder="Enter URL or JAV code (e.g., ABP-123)">
             <button id="startDownloadBtn">⬇️ <span data-i18n="download_now">Download</span></button>
             <button id="batchBtn" class="btn-secondary">📋 <span data-i18n="batch_add">Batch Add</span></button>
+            <button id="customBtn" class="btn-secondary">🔗 <span data-i18n="custom">Custom</span></button>
         </div>
         <div id="batchPanel" class="hidden">
             <textarea id="batchUrls" class="batch-input" data-i18n-placeholder="batch_placeholder" placeholder="Enter one URL or JAV code per line..."></textarea>
             <div class="button-group">
                 <button id="addBatchBtn">➕ <span data-i18n="add_all">Add All to Queue</span></button>
                 <button id="cancelBatchBtn" class="btn-secondary"><span data-i18n="cancel">Cancel</span></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Crawler Modal -->
+    <div id="crawlerModal" class="modal hidden" style="display: none;">
+        <div class="modal-content" style="max-width: 900px; max-height: 90vh; display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 id="crawlerModalTitle" style="margin:0;" data-i18n="custom_list">Custom List</h3>
+                <button id="closeCrawlerBtn" class="btn-secondary" style="padding: 5px 10px;">✕</button>
+            </div>
+            
+            <div id="crawlerStatus" class="card" style="padding: 10px; margin-bottom: 10px; background: #252526; font-size: 14px;">
+                <span data-i18n="fetching">Fetching...</span>
+            </div>
+
+            <div style="flex-grow: 1; overflow-y: auto; border: 1px solid #333; border-radius: 5px;">
+                <table class="crawler-table" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr style="background: #0f3460;">
+                            <th style="width: 40px; text-align: center;"><input type="checkbox" id="crawlerSelectAll"></th>
+                            <th style="width: 120px;" data-i18n="code">Code</th>
+                            <th data-i18n="title">Title</th>
+                            <th style="width: 80px;" data-i18n="link">Link</th>
+                        </tr>
+                    </thead>
+                    <tbody id="crawlerTableBody">
+                        <tr><td colspan="4" style="text-align:center; padding:20px;" data-i18n="no_videos">No videos found</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="button-group" style="margin-top: 15px;">
+                <button id="crawlerSelectAllBtn" class="btn-secondary">✅ <span data-i18n="select_all">Select All</span></button>
+                <button id="crawlerSelectNoneBtn" class="btn-secondary" data-i18n="select_none">Select None</button>
+                <button id="crawlerDownloadBtn" data-i18n="download_selected">⬇️ Download Selected</button>
             </div>
         </div>
     </div>
@@ -128,6 +165,52 @@
         <pre id="docsContent" style="white-space: pre-wrap; word-wrap: break-word; font-family: monospace; font-size: 14px; line-height: 1.6; text-align: left; background: #1e1e1e; color: #d4d4d4; padding: 20px; border-radius: 8px; overflow-y: auto; flex-grow: 1; margin:0;">Loading...</pre>
     </div>
 </div>
+
+<!-- Filter Selection Modal -->
+<div id="filterModal" class="modal hidden" style="display: none;">
+    <div class="modal-content" style="max-width: 500px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin:0;" data-i18n="select_filter">Select Filter</h3>
+            <button id="closeFilterBtn" class="btn-secondary" style="padding: 5px 10px;">✕</button>
+        </div>
+        
+        <div id="filterList" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;">
+            <!-- Filters will be injected here as radio buttons -->
+        </div>
+        
+        <div class="button-group">
+            <button id="cancelFilterBtn" class="btn-secondary" data-i18n="cancel">Cancel</button>
+            <button id="confirmFilterBtn" data-i18n="next">Next</button>
+        </div>
+    </div>
+</div>
+
+<!-- Page Selection Modal -->
+<div id="pageModal" class="modal hidden" style="display: none;">
+    <div class="modal-content" style="max-width: 400px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 style="margin:0;" data-i18n="select_pages">Select Pages</h3>
+            <button id="closePageBtn" class="btn-secondary" style="padding: 5px 10px;">✕</button>
+        </div>
+        
+        <div class="setting-group">
+            <label data-i18n="total_pages">Total Pages Available:</label>
+            <div id="totalPagesDisplay" style="font-size: 24px; font-weight: bold; color: #00d9ff; margin: 10px 0;"></div>
+        </div>
+        
+        <div class="setting-group">
+            <label data-i18n="pages_to_scrape">Pages to Scrape:</label>
+            <input type="number" id="pagesInput" class="setting-input" min="1" value="1" style="width: 100%;">
+        </div>
+        
+        <div class="button-group">
+            <button id="cancelPageBtn" class="btn-secondary" data-i18n="cancel">Cancel</button>
+            <button id="confirmPageBtn" data-i18n="start_scrape">Start Scraping</button>
+        </div>
+    </div>
+</div>
+
 <script src="{{ url_for('static', filename='script.js') }}"></script>
+<script src="{{ url_for('static', filename='crawler.js') }}"></script>
 </body>
 </html>
