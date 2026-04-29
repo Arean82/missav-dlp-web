@@ -136,18 +136,6 @@ def get_languages():
         }
     })
 
-# Rest of your routes remain the same...
-@app.route('/api/info', methods=['POST'])
-def info():
-    data = request.json
-    url = data.get('url', '').strip()
-    if not url:
-        return jsonify({"status": "error", "message": "URL required"}), 400
-    info = get_video_info(url)
-    if info:
-        return jsonify({"status": "success", "info": info})
-    return jsonify({"status": "error", "message": "Failed to get video info"}), 500
-
 # Download route with optional format selection
 @app.route('/api/download', methods=['POST'])
 def download():

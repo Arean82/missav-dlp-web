@@ -50,6 +50,7 @@
   "file_deleted": "ファイルが削除されました",
   "cancelled": "キャンセル済み",
   "clean_history_confirm": "ダウンロードしたすべてのファイルを削除してもよろしいですか？",
+  "clean_history": "履歴を削除",
   "failed_load_doc": "ドキュメントの読み込みに失敗しました。",
   
   "custom": "カスタム",
@@ -60,6 +61,7 @@
   "link": "リンク",
   "no_videos": "動画が見つかりません",
   "select_none": "すべて選択解除",
+  "select_all": "すべて選択",
   "download_selected": "選択をダウンロード",
   "enter_url_first": "最初にURLを入力してください",
   "found_count": "{count}件の動画が見つかりました",
@@ -69,7 +71,7 @@
   "pages_placeholder": "数字を入力または空で全て",
   "start_scrape": "スクレイピング開始",
 
-    "select_filter": "フィルタ選択",
+  "select_filter": "フィルタ選択",
   "next": "次へ",
   "select_pages": "ページ選択",
   "total_pages": "総ページ数",
@@ -77,6 +79,5 @@
   "no_filters": "フィルタが見つかりません",
   "select_filter_first": "最初にフィルタを選択してください",
   "unknown": "不明",
-  "scraping_pages": "{pages}ページをスクレイピング中...",
-  "select_all": "すべて選択"
+  "scraping_pages": "{pages}ページをスクレイピング中..."
 }

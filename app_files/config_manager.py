@@ -35,7 +35,12 @@ def load_settings():
 
 def save_settings(settings):
     try:
-        with open(SETTINGS_FILE, 'w', encoding='utf-8') as f:
+        import tempfile
+        temp_dir = SETTINGS_FILE.parent
+        with tempfile.NamedTemporaryFile(mode='w', dir=temp_dir, delete=False, encoding='utf-8') as f:
             json.dump(settings, f, indent=2, ensure_ascii=False)
+            temp_path = f.name
+        os.replace(temp_path, SETTINGS_FILE)
     except Exception as e:
         print(f"Error saving settings: {e}")
+

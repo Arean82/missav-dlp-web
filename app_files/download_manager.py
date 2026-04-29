@@ -52,64 +52,6 @@ def format_duration(seconds):
         return f"{hours:02d}:{minutes:02d}:{secs:02d}"
     return f"{minutes:02d}:{secs:02d}"
 
-def get_video_info(url):
-    try:
-        settings = load_settings()
-        
-        if is_jav_code(url):
-            mirrors = settings.get('mirrors', [])
-            url = jav_code_to_url(url, mirrors[0] if mirrors else 'missav.ws')
-            print(f"[DEBUG] JAV URL generated: {url}", flush=True)
-        
-        ydl_opts = {
-            'quiet': True,
-            'no_warnings': True,
-            'extract_flat': False,
-            'http_headers': {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-                'Referer': 'https://missav.ws/',
-                'Origin': 'https://missav.ws',
-            }
-        }
-        
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-            ydl.add_info_extractor(MyCustomMissAV(settings=settings))
-            # Do not add default extractors to prevent built-in MissAV extractor conflicts
-            info = ydl.extract_info(url, download=False)
-            
-            formats = []
-            for f in info.get('formats', []):
-                height = f.get('height')
-                if height:
-                    formats.append({
-                        'format_id': f.get('format_id'),
-                        'resolution': f"{height}p",
-                        'height': height,
-                        'filesize': f.get('filesize'),
-                    })
-            
-            unique_formats = {}
-            for f in formats:
-                if f['height'] not in unique_formats:
-                    unique_formats[f['height']] = f
-            
-            duration = info.get('duration')
-            is_preview = duration and duration < 600
-            
-            return {
-                'id': info.get('id'),
-                'title': info.get('title'),
-                'duration': duration,
-                'duration_string': format_duration(duration),
-                'thumbnail': info.get('thumbnail'),
-                'formats': sorted(unique_formats.values(), key=lambda x: x['height'], reverse=True),
-                'is_preview': is_preview,
-                'url': url
-            }
-    except Exception as e:
-        print(f"Error getting video info: {e}")
-        return None
-
 def add_download(url, selected_format=None):
     task_id = str(uuid.uuid4())
     tasks[task_id] = {
@@ -331,14 +273,44 @@ start_workers()
 def clear_queue():
     global download_queue
     cleared = []
-    new_queue = queue.Queue()
-    for task_id, task in list(tasks.items()):
-        if task['status'] == 'Downloading':
-            new_queue.put(task_id)
-        else:
-            cleared.append(task_id)
-            del tasks[task_id]
-    download_queue = new_queue
+    
+    with queue_lock:
+        # Get all task IDs currently in queue (non-destructively)
+        queued_ids = set()
+        temp_queue = queue.Queue()
+        
+        # Drain current queue to see what's pending
+        while not download_queue.empty():
+            try:
+                task_id = download_queue.get_nowait()
+                if task_id is not None:
+                    queued_ids.add(task_id)
+                    temp_queue.put(task_id)
+            except queue.Empty:
+                break
+        
+        # Restore queue
+        download_queue = temp_queue
+        
+        # Now filter tasks
+        for task_id, task in list(tasks.items()):
+            if task['status'] == 'Downloading':
+                continue  # Keep downloading tasks
+            elif task['status'] == 'Waiting' and task_id in queued_ids:
+                # Remove from queue and delete
+                cleared.append(task_id)
+                del tasks[task_id]
+            elif task['status'] not in ['Downloading']:
+                cleared.append(task_id)
+                del tasks[task_id]
+        
+        # Rebuild queue with only remaining tasks
+        new_queue = queue.Queue()
+        for task_id, task in tasks.items():
+            if task['status'] == 'Waiting':
+                new_queue.put(task_id)
+        download_queue = new_queue
+    
     return cleared
 
 def clean_completed():

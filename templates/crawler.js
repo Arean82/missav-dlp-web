@@ -10,6 +10,7 @@ let totalPages = 1;
 const filterModal = document.getElementById('filterModal');
 const pageModal = document.getElementById('pageModal');
 const crawlerModal = document.getElementById('crawlerModal');
+const crawlerSelectAll = document.getElementById('crawlerSelectAll');
 
 // Step 1: Show filter selection
 async function openCrawlerModal() {
