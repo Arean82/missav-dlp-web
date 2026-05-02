@@ -49,8 +49,19 @@
   "task_cancelled": "작업이 취소되었습니다",
   "file_deleted": "파일이 삭제되었습니다",
   "cancelled": "취소됨",
-  "clean_history_confirm": "다운로드한 모든 파일을 삭제하시겠습니까?",
-  "clean_history": "기록 삭제",
+  "clean_history_confirm": "모든 완료된 작업을 목록에서 지우시겠습니까? (실제 파일은 삭제되지 않습니다)",
+  "clean_history": "작업 기록 지우기",
+  "clear_gui_confirm": "모든 완료/대기 중인 작업을 목록에서 지우시겠습니까? (실제 파일은 삭제되지 않습니다)",
+  "purge_files": "모든 파일 삭제",
+  "purge_files_confirm": "⚠️ 위험: 모든 다운로드된 파일이 영구적으로 삭제됩니다. 계속하시겠습니까?",
+  "files_deleted_count": "{count}개의 파일이 영구적으로 삭제되었습니다.",
+  "delete_task_confirm": "이 작업을 목록에서 제거하시겠습니까?",
+  "stop": "중지",
+  "ratelimit": "다운로드 속도 제한 (KB/s, 0은 무제한)",
+  "check_mirrors": "미러 속도 확인 및 정렬",
+  "delete_selected": "선택 항목 삭제",
+  "select_one_file": "최소 하나 이상의 파일을 선택하세요",
+  "delete_selected_confirm": "선택한 {count}개의 파일을 삭제하시겠습니까?",
   "failed_load_doc": "문서를 로드하는 데 실패했습니다.",
 
   "custom": "사용자 정의",
@@ -79,5 +90,10 @@
   "no_filters": "필터를 찾을 수 없음",
   "select_filter_first": "먼저 필터를 선택하세요",
   "unknown": "알 수 없음",
-  "scraping_pages": "{pages}페이지 스크래핑 중..."
+  "scraping_pages": "{pages}페이지 스크래핑 중...",
+  "fetching_metadata": "메타데이터 가져오는 중...",
+  "tagging": "태그 삽입 중...",
+  "disk_full": "디스크 꽉 참",
+  "insufficient_space": "공간 부족",
+  "queued": "대기열에 추가됨"
 }

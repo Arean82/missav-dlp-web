@@ -49,8 +49,19 @@
   "task_cancelled": "Task cancelled",
   "file_deleted": "File deleted",
   "cancelled": "Cancelled",
-  "clean_history_confirm": "Are you sure you want to delete ALL downloaded files?",
-  "clean_history": "Clean History",
+  "clean_history_confirm": "Clear all finished tasks from the list? (Actual files will NOT be deleted)",
+  "clean_history": "Clear Task History",
+  "clear_gui_confirm": "Clear all finished/waiting tasks from the list? (Actual files will NOT be deleted)",
+  "purge_files": "Delete All Files",
+  "purge_files_confirm": "⚠️ DANGER: This will permanently delete ALL downloaded files. Are you sure?",
+  "files_deleted_count": "Permanently deleted {count} files.",
+  "delete_task_confirm": "Remove this task from the list?",
+  "stop": "Stop",
+  "delete_selected": "Delete Selected",
+  "select_one_file": "Please select at least one file",
+  "delete_selected_confirm": "Delete {count} selected files?",
+  "ratelimit": "Download Rate Limit (KB/s, 0 for unlimited)",
+  "check_mirrors": "Check Mirror Speed & Sort",
   "failed_load_doc": "Failed to load document.",
 
   "custom": "Custom",
@@ -79,5 +90,10 @@
   "no_filters": "No filters found",
   "select_filter_first": "Please select a filter first",
   "unknown": "Unknown",
-  "scraping_pages": "Scraping {pages} pages..."
+  "scraping_pages": "Scraping {pages} pages...",
+  "fetching_metadata": "Fetching Metadata...",
+  "tagging": "Tagging...",
+  "disk_full": "Disk Full",
+  "insufficient_space": "Insufficient Space",
+  "queued": "Queued"
 }

@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🎬 MissAV Downloader</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='marked.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='theme.js') }}"></script>
 </head>
 <body>
 <div class="container">
@@ -100,7 +102,15 @@
     <!-- File List -->
     <div class="card">
         <h3><span data-i18n="downloads">Downloads</span></h3>
-        <input type="text" id="fileSearch" data-i18n-placeholder="search_files" placeholder="Search files..." class="search-input">
+        <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 15px;">
+            <input type="text" id="fileSearch" data-i18n-placeholder="search_files" placeholder="Search files..." class="search-input" style="margin-bottom: 0;">
+            <button id="deleteSelectedFilesBtn" class="btn-secondary" style="white-space: nowrap; display: none;">🗑️ <span data-i18n="delete_selected">Delete Selected</span></button>
+            <button id="purgeFilesBtn" class="btn-danger" style="white-space: nowrap;">🗑️ <span data-i18n="purge_files">Delete All Files</span></button>
+        </div>
+        <div id="fileListHeader" style="display: none; padding: 10px; background: #1a1a2e; border-radius: 5px; margin-bottom: 10px; align-items: center;">
+            <input type="checkbox" id="selectAllFiles" style="margin-right: 10px;">
+            <label for="selectAllFiles" style="font-size: 14px; cursor: pointer;"><span data-i18n="select_all">Select All</span></label>
+        </div>
         <div id="fileList"></div>
     </div>
 </div>
@@ -132,6 +142,10 @@
             <input type="number" id="settingsDelay" class="setting-input">
         </div>
         <div class="setting-group">
+            <label><span data-i18n="ratelimit">Download Rate Limit (KB/s, 0 for unlimited)</span>:</label>
+            <input type="number" id="settingsRateLimit" class="setting-input" min="0" step="100">
+        </div>
+        <div class="setting-group">
             <label><span data-i18n="default_quality">Default Quality</span>:</label>
             <select id="settingsQuality" class="setting-input">
                 <option value="best"><span data-i18n="best">Best</span></option>
@@ -146,7 +160,8 @@
         </div>
         <div class="setting-group">
             <label><span data-i18n="mirror_domains">Mirror Domains (one per line)</span>:</label>
-            <textarea id="settingsMirrors" rows="4" class="setting-textarea"></textarea>
+            <textarea id="settingsMirrors" rows="4" class="setting-textarea" style="margin-bottom: 10px;"></textarea>
+            <button id="checkMirrorsBtn" class="btn-secondary" style="width: 100%; font-size: 13px; padding: 8px;">⚡ <span data-i18n="check_mirrors">Check Mirror Speed & Sort</span></button>
         </div>
         <div class="button-group">
             <button id="saveSettingsBtn"><span data-i18n="save">Save</span></button>

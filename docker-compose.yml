@@ -6,9 +6,10 @@ services:
       - '55000:5000'
     restart: unless-stopped
     environment:
-      - FLASK_HOST=0.0.0.0  # Tells app.py to open to Docker network
+      - FLASK_HOST=0.0.0.0
+      - TZ=UTC  # Change to your timezone, e.g., Asia/Seoul
     volumes:
-      - /home/main/downloads:/app/downloads
-      - /home/main/logs:/app/logs
-
-      
+      - ./downloads:/app/downloads
+      - ./logs:/app/logs
+      - ./tasks.db:/app/tasks.db
+      - ./.settings.json:/app/.settings.json

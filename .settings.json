@@ -2,18 +2,22 @@
   "max_concurrent": 2,
   "filename_template": "[%(id)s] %(title).60s.%(ext)s",
   "spoofdpi_enabled": true,
+  "spoofdpi_port": 8080,
   "video_quality": "480p",
   "mirrors": [
-    "missav.ai",
-    "missav.net",
     "missav123.com",
-    "missav.com",
     "missav.ws",
-    "missav.live"
+    "missav.live",
+    "missav.ai",
+    "missav.com",
+    "missav.net"
   ],
   "download_dir": "C:\\Users\\user\\OneDrive\\Desktop\\python\\Scale\\missav-dlp-web\\downloads",
   "delay_between_downloads": 3,
   "max_retries": 3,
   "sequential_mode": true,
-  "ffmpeg_path": "C:\\Users\\user\\OneDrive\\Desktop\\python\\Scale\\missav-dlp-web\\ffmpeg\\bin"
+  "theme": "dark",
+  "ratelimit": 0,
+  "ffmpeg_path": "C:\\Users\\user\\OneDrive\\Desktop\\python\\Scale\\missav-dlp-web\\ffmpeg\\bin",
+  "secret_key": "ce1eef565f6ad79b9bff0a34eadefddaf02af44650c37221"
 }

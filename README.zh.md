@@ -18,15 +18,16 @@
 
 ### 新功能
 
-- **🌍 多语言支持：** 支持英语、韩语、日语和简体中文。可通过下拉菜单轻松切换语言。
-- **⚙️ 设置管理：** 可直接在 Web UI 中配置下载目录、顺序模式、下载间隔、默认清晰度以及镜像域名。
-- **🔍 JAV 代码转换：** 输入 JAV 代码（例如：ABP-123），应用会自动转换为正确的 MissAV URL。
-- **📦 批量下载：** 一次添加多个 URL 或 JAV 代码进行批量下载。
-- **📁 文件管理器：** 可在 Web 界面中浏览、搜索、预览和删除已下载文件。
-- **📝 下载日志：** 每个下载任务都有独立的日志文件，便于排查问题。
-- **⚡ 顺序/并行模式：** 可选择一次下载一个视频或同时下载多个视频。
-- **🎯 智能分辨率回退：** 如果所选清晰度（例如 1080p）不可用，程序会依次尝试更高（1440p/2160p）→更低（720p/480p）→最终选择最佳可用质量。
-- **📊 下载元数据：** 可在任务列表中查看视频分辨率、最终文件大小以及耗时。
+- **零配置设置 (Zero-Configuration)：** 不再需要手动设置代理。应用会自动检测您的操作系统并为您安装/配置 **SpoofDPI**。
+- **SQLite 数据库：** 所有下载任务和历史记录现在都存储在持久的 SQLite 数据库中。即使应用崩溃或重启，历史记录也不会丢失。
+- **实时事件流 (SSE)：** UI 现在可以接收来自服务器的即时更新。不再需要轮询——进度条和状态更改会在发生的瞬间显示。
+- **深度元数据抓取：** 自动访问视频页面，抓取演员姓名、类型、厂商、发行商以及高清海报。
+- **MP4 元数据打标：** 使用 `mutagen` 将抓取的元数据和封面图直接注入 MP4 文件，提供专业的媒体库体验。
+- **可视化任务列表：** 下载队列现在可以显示每个视频的高清缩略图预览。
+- **多站点回退：** 如果 MissAV 缺少元数据，会自动尝试 BestJavPorn 或 JavGuru 进行补充。
+- **磁盘空间保护：** 在开始下载前自动检查可用磁盘空间，防止系统崩溃（兼容 Docker）。
+- **优雅的进程管理：** 改进了退出时对 SpoofDPI 及其他后台进程的清理逻辑。
+- **📊 下载元数据显示：** 可在任务列表中查看视频分辨率、最终文件大小以及耗时。
 - **⚡ 动态并行下载：** 可在设置中动态调整并发下载线程数量，无需重启应用，多余线程会安全终止。
 - **🔧 自定义 FFmpeg 路径：** 可在 Web UI 中指定 FFmpeg 二进制目录，保存前会自动验证 `ffmpeg`、`ffprobe` 和 `ffplay` 是否存在。
 - **🗑️ 清理历史：** UI 中提供一键按钮，用于完全删除服务器上的所有下载文件。
@@ -34,6 +35,18 @@
 - **🔗 自定义URL爬虫：** 输入系列、厂商或搜索URL，选择筛选器，选择要抓取的页数，然后直接从结果中选择视频下载。
 
 ## 🛠️ 安装与使用
+
+### 📦 桌面端 / 发行版（最简单）
+
+1. **下载**：从 **Releases** 页面下载适用于您的操作系统（Windows、Linux 或 macOS）的最新版本。
+2. **运行**：
+   - **Windows**：双击 `MissAV_Downloader.exe`。
+   - **Linux/macOS**：打开终端并运行 `./MissAV_Downloader`（确保具有执行权限：`chmod +x MissAV_Downloader`）。
+3. **完成**：应用将自动处理环境设置 (SpoofDPI) 并在浏览器中打开 `http://localhost:5000`。
+
+---
+
+### 🐳 Docker 安装（推荐用于服务器/NAS）
 
 > ⚠️ **建议：** 为了安全起见，请在 VPN（例如 Gluetun）环境中运行。
 
@@ -53,7 +66,7 @@ services:
       - /path/to/your/downloads:/downloads
       - ./locales:/app/locales # 可选：用于自定义翻译
     restart: unless-stopped
-````
+```
 
 ### 2. 在 Gluetun 的 `docker-compose.yml` 中添加端口
 
@@ -71,13 +84,13 @@ services:
 
 容器启动后，在浏览器中打开：
 
-```id="5t9y6k"
+```
 http://[YOUR_NAS_OR_SERVER_IP]:58000
 ```
 
 ## 📁 项目结构
 
-```id="t0a3pw"
+```
 missav-dlp-web/
 ├── app.py                    # 主 Flask 应用程序
 ├── .settings.json            # 用户设置（自动生成）
@@ -139,7 +152,7 @@ missav-dlp-web/
 
 也可以直接编辑 `.settings.json`：
 
-```json id="jv2p7f"
+```json
 {
   "max_concurrent": 1,
   "ffmpeg_path": "",
@@ -204,26 +217,52 @@ missav-dlp-web/
 ```bash
 docker build -t missav-dlp-web .
 docker run -p 5000:5000 -v $(pwd)/downloads:/downloads missav-dlp-web
-````
+```
 
 ## 📦 依赖要求
 
 * Docker & Docker Compose
 * （可选）Gluetun 或任何 OpenVPN / WireGuard 容器
 * Python 3.8+（用于本地开发）
+* **PyInstaller**（用于构建可执行文件）
 * FFmpeg（用于视频合并）
 
-### 本地开发
+### 🛠️ 开发与构建 (Development & Building)
 
-```bash id="c4e2rw"
+如果您想从源代码运行或构建自己的可执行文件：
+
+#### 1. 设置环境
+```bash
+# 创建虚拟环境
+python -m venv venv
+
+# 激活环境
+# Windows:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
+
 # 安装依赖
 pip install -r requirements.txt
-
-# 运行应用
-python app.py
-
-# 访问 http://localhost:5000
+pip install pyinstaller
 ```
+
+#### 2. 从源码运行
+```bash
+python main.py
+```
+
+#### 3. 构建可执行文件
+我们为所有平台提供了自动化脚本：
+- **Windows**: 运行 `build.bat`
+- **Linux/macOS**: 运行 `bash build.sh`
+
+**手动构建:**
+```bash
+pyinstaller --clean MissAV_Downloader_onefile.spec
+```
+
+---
 
 ## 🔄 API 接口
 
@@ -291,6 +330,17 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 
 ## 📝 更新日志
 
+### Version 4.0 (Industrial Grade)
+
+- **零配置**：新增 Linux 和 macOS 上的 SpoofDPI **自动安装**支持；Windows 上的二进制文件自动检测。
+- **原子化持久性**: 将内存存储替换为 **SQLite**，实现防崩溃的历史记录保存。
+- **响应式 UI**: 引入 **SSE (Server-Sent Events)**，实现即时、低开销的状态更新。
+- **元数据增强**: 集成 **深度抓取 + Mutagen**，支持自动 MP4 打标和封面注入。
+- **可视化队列**: 任务列表新增 **120px 缩略图**。
+- **安全保障**: 新增具备 Docker 挂载点检测功能的 **磁盘空间保护**。
+- **智能回退**: 新增 **多站点回退** (BestJavPorn/JavGuru) 以补全缺失标签。
+- **稳定性**: 优化进程生命周期，防止产生孤儿 SpoofDPI 实例。
+
 ### Version 3.1
 
 * 新增智能分辨率回退逻辑（精确 → 更高 → 更低 → 默认）
@@ -320,5 +370,3 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 * 基本下载功能
 * 实时进度显示
 * 使用 curl_cffi 绕过 Cloudflare
-
-

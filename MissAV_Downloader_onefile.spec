@@ -37,6 +37,11 @@ hidden_imports = [
     'shutil',
     'pathlib',
     'webbrowser',
+    'mutagen',
+    'mutagen.mp4',
+    'cloudscraper',
+    'bs4',
+    'sqlite3'
 ]
 
 datas = [
@@ -45,25 +50,35 @@ datas = [
     ('app_files', 'app_files'),
     ('README.md', '.'),
     ('SECURITY.md', '.'),
-    ('LICENSE', '.'),
 ]
 
+# Add localized READMEs
 for lang in ['ko', 'ja', 'zh']:
     readme_file = f'README.{lang}.md'
     if os.path.exists(readme_file):
         datas.append((readme_file, '.'))
 
+# Add License (handle case sensitivity)
+if os.path.exists('License'):
+    datas.append(('License', '.'))
+elif os.path.exists('LICENSE'):
+    datas.append(('LICENSE', '.'))
+
 # Collect curl_cffi runtime data
 datas += collect_data_files('curl_cffi')
 
+# Add SpoofDPI (handle cross-platform)
 if os.path.exists('spoofdpi.exe'):
     datas.append(('spoofdpi.exe', '.'))
+elif os.path.exists('spoofdpi'):
+    datas.append(('spoofdpi', '.'))
 
+# Add FFmpeg folder
 if os.path.exists('ffmpeg'):
     datas.append(('ffmpeg', 'ffmpeg'))
 
 a = Analysis(
-    ['app.py'],
+    ['main.py'],  # Use main.py as the entry point
     pathex=[],
     binaries=[],
     datas=datas,
@@ -77,7 +92,7 @@ a = Analysis(
 
 pyz = PYZ(a.pure)
 
-# ONFILE MODE: a.binaries and a.datas go INSIDE the exe block
+# ONFILE MODE
 exe = EXE(
     pyz,
     a.scripts,
@@ -89,7 +104,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=False,  # Set to False to hide the black terminal window
+    console=False,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

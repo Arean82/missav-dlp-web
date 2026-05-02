@@ -8,7 +8,6 @@ from app_files.paths import ROOT_DIR
 
 # Default settings for extractor (fallback if not provided)
 DEFAULT_MIRRORS = ['missav.ai', 'missav.net', 'missav123.com', 'missav.com', 'missav.ws']
-SPOOFDPI_PROXY = "http://127.0.0.1:8080"
 
 class MyCustomMissAV(InfoExtractor):
     IE_NAME = 'custom_missav'
@@ -17,7 +16,8 @@ class MyCustomMissAV(InfoExtractor):
     def __init__(self, settings=None):
         super().__init__()
         self._settings = settings or {}
-        self._spoofdpi_proxy = SPOOFDPI_PROXY
+        spoofdpi_port = self._settings.get('spoofdpi_port', 8080)
+        self._spoofdpi_proxy = f"http://127.0.0.1:{spoofdpi_port}"
 
     def _real_extract(self, url):
         video_id = self._match_id(url)

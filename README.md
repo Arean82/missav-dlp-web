@@ -18,6 +18,15 @@ Built with `curl_cffi` and `yt-dlp` to bypass ISP blocking (SNI) and Cloudflare'
 
 ### New Features
 
+- **Zero-Configuration Setup:** No more manual proxy setup. The app automatically detects your OS and installs/configures **SpoofDPI** for you.
+- **SQLite Database:** All download tasks and history are now stored in a persistent SQLite database. History is never lost, even if the app crashes or restarts.
+- **Real-time Event Streaming (SSE):** The UI now receives instant updates from the server. No more polling—progress bars and status changes appear the millisecond they happen.
+- **Deep Metadata Scraping:** Automatically visits the video page to scrape Actor names, Genres, Maker, Label, and high-res posters.
+- **MP4 Metadata Tagging:** Uses `mutagen` to inject scraped metadata and cover art directly into the MP4 file for a professional media library experience.
+- **Visual Task List:** The download queue now displays high-quality thumbnail previews for every video.
+- **Multi-Site Fallback:** Automatically tries BestJavPorn or JavGuru if MissAV is missing metadata.
+- **Disk Space Guard:** Automatically checks available disk space before starting a download to prevent system crashes (Docker compatible).
+- **Graceful Process Management:** Improved cleanup of SpoofDPI and other background processes on exit.
 - **🌍 Multilingual Support:** Available in English, Korean, Japanese, and Chinese (Simplified). Easily switch languages via the dropdown menu.
 - **⚙️ Settings Management:** Configure download directory, sequential mode, delay between downloads, default quality, and mirror domains directly from the web UI.
 - **🔍 JAV Code Conversion:** Simply enter a JAV code (e.g., ABP-123) and the app automatically converts it to the correct MissAV URL.
@@ -33,7 +42,29 @@ Built with `curl_cffi` and `yt-dlp` to bypass ISP blocking (SNI) and Cloudflare'
 - **📄 Documentation Viewer:** Built-in modal to view localized README, SECURITY, and LICENSE files directly from the web interface.
 - **🔗 Custom URL Crawler:** Enter a series, maker, or search URL, select a filter, choose how many pages to scrape, and batch select videos to download directly from the results.
 
+### Version 4.0 (Industrial Grade)
+
+- **Atomic Persistence**: Replaced memory storage with **SQLite** for crash-proof history.
+- **Reactive UI**: Implemented **Server-Sent Events (SSE)** for instant, low-overhead updates.
+- **Metadata Pro**: Integrated **Deep Scraping + Mutagen** for automatic MP4 tagging and cover art.
+- **Visual Queue**: Added **120px Thumbnails** to the task list.
+- **Safety**: Added **Disk Space Guard** with Docker mount-point detection.
+- **Intelligence**: Added **Multi-Site Fallback** (BestJavPorn/JavGuru) for missing tags.
+- **Stability**: Refined process lifecycle to prevent orphaned SpoofDPI instances.
+
 ## 🛠️ Installation & Usage
+
+### 📦 Desktop / Release (Easiest)
+
+1.  **Download**: Get the latest release for your operating system (Windows, Linux, or macOS) from the **Releases** page.
+2.  **Run**: 
+    - **Windows**: Double-click `MissAV_Downloader.exe`.
+    - **Linux/macOS**: Open a terminal and run `./MissAV_Downloader` (Ensure it has execute permissions: `chmod +x MissAV_Downloader`).
+3.  **Done**: The app will automatically handle the environment setup (SpoofDPI) and open your browser to `http://localhost:5000`.
+
+---
+
+### 🐳 Docker Installation (Recommended for Servers/NAS)
 
 > ⚠️ **Recommendation:** For safety, run this with a VPN (e.g., Gluetun).
 
@@ -208,22 +239,48 @@ docker run -p 5000:5000 -v $(pwd)/downloads:/downloads missav-dlp-web
 
 ## 📦 Requirements
 
-- Docker & Docker Compose
-- (Optional) Gluetun or any OpenVPN/WireGuard container
-- Python 3.8+ (for local development)
+- Docker & Docker Compose (for containerized deployment)
+- Python 3.8+ (for local source execution)
+- **PyInstaller** (for building your own .exe / binary)
 - FFmpeg (for video merging)
+- (Optional) Gluetun or any OpenVPN/WireGuard container
 
-### Local Development
+### 🛠️ Development & Building
 
+If you want to run the code from source or build your own executable:
+
+#### 1. Setup Environment
 ```bash
+# Create virtual environment
+python -m venv venv
+
+# Activate it
+# Windows:
+venv\Scripts\activate
+# Linux/macOS:
+source venv/bin/activate
+
 # Install dependencies
 pip install -r requirements.txt
-
-# Run the application
-python app.py
-
-# Access at http://localhost:5000
+pip install pyinstaller
 ```
+
+#### 2. Run from Source
+```bash
+python main.py
+```
+
+#### 3. Build Executable
+We provide automated scripts for all platforms:
+- **Windows**: Run `build.bat`
+- **Linux/macOS**: Run `bash build.sh`
+
+**Manual Build:**
+```bash
+pyinstaller --clean MissAV_Downloader_onefile.spec
+```
+
+---
 
 ## 🔄 API Endpoints
 
@@ -289,6 +346,17 @@ This project is based on the excellent work by **[nerdnam](https://github.com/ne
 ---
 
 ## 📝 Changelog
+
+### Version 4.0 (Industrial Grade)
+
+- **Zero-Config**: Added **Auto-Install** for SpoofDPI on Linux and macOS; automatic binary detection on Windows.
+- **Atomic Persistence**: Replaced memory storage with **SQLite** for crash-proof history.
+- **Reactive UI**: Implemented **Server-Sent Events (SSE)** for instant, low-overhead updates.
+- **Metadata Pro**: Integrated **Deep Scraping + Mutagen** for automatic MP4 tagging and cover art.
+- **Visual Queue**: Added **120px Thumbnails** to the task list.
+- **Safety**: Added **Disk Space Guard** with Docker mount-point detection.
+- **Intelligence**: Added **Multi-Site Fallback** (BestJavPorn/JavGuru) for missing tags.
+- **Stability**: Refined process lifecycle to prevent orphaned SpoofDPI instances.
 
 ### Version 3.1
 

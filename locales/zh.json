@@ -49,8 +49,19 @@
   "task_cancelled": "任务已取消",
   "file_deleted": "文件已删除",
   "cancelled": "已取消",
-  "clean_history_confirm": "确定要删除所有已下载的文件吗？",
-  "clean_history": "清除历史",
+  "clean_history_confirm": "是否清除列表中所有已完成的任务？（实际文件不会被删除）",
+  "clean_history": "清除任务记录",
+  "clear_gui_confirm": "是否清除列表中所有已完成/等待中的任务？（实际文件不会被删除）",
+  "purge_files": "删除所有文件",
+  "purge_files_confirm": "⚠️ 危险：这将永久删除所有已下载的文件。您确定吗？",
+  "files_deleted_count": "已永久删除 {count} 个文件。",
+  "delete_task_confirm": "从列表中移除此任务？",
+  "stop": "停止",
+  "ratelimit": "下载速度限制 (KB/s, 0 为无限制)",
+  "check_mirrors": "检查镜像速度并排序",
+  "delete_selected": "删除选中项",
+  "select_one_file": "请至少选择一个文件",
+  "delete_selected_confirm": "确定删除选中的 {count} 个文件吗？",
   "failed_load_doc": "加载文档失败。",
 
   "custom": "自定义",
@@ -79,5 +90,10 @@
   "no_filters": "未找到筛选器",
   "select_filter_first": "请先选择筛选器",
   "unknown": "未知",
-  "scraping_pages": "正在抓取 {pages} 页..."
+  "scraping_pages": "正在抓取 {pages} 页...",
+  "fetching_metadata": "正在获取元数据...",
+  "tagging": "正在写入标签...",
+  "disk_full": "磁盘已满",
+  "insufficient_space": "空间不足",
+  "queued": "已加入队列"
 }

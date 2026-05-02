@@ -49,8 +49,19 @@
   "task_cancelled": "タスクがキャンセルされました",
   "file_deleted": "ファイルが削除されました",
   "cancelled": "キャンセル済み",
-  "clean_history_confirm": "ダウンロードしたすべてのファイルを削除してもよろしいですか？",
-  "clean_history": "履歴を削除",
+  "clean_history_confirm": "全ての完了したタスクをリストから削除しますか？（実際のファイルは削除されません）",
+  "clean_history": "タスク履歴をクリア",
+  "clear_gui_confirm": "全ての完了/待機中のタスクをリストから削除しますか？（実際のファイルは削除されません）",
+  "purge_files": "全てのファイルを削除",
+  "purge_files_confirm": "⚠️ 危険: 全てのダウンロード済みファイルが完全に削除されます。よろしいですか？",
+  "files_deleted_count": "{count} 個のファイルを完全に削除しました。",
+  "delete_task_confirm": "このタスクをリストから削除しますか？",
+  "stop": "停止",
+  "ratelimit": "ダウンロード速度制限 (KB/s, 0で無制限)",
+  "check_mirrors": "ミラーの速度を確認して並べ替え",
+  "delete_selected": "選択した項目を削除",
+  "select_one_file": "少なくとも1つのファイルを選択してください",
+  "delete_selected_confirm": "選択した {count} 個のファイルを削除しますか？",
   "failed_load_doc": "ドキュメントの読み込みに失敗しました。",
   
   "custom": "カスタム",
@@ -79,5 +90,10 @@
   "no_filters": "フィルタが見つかりません",
   "select_filter_first": "最初にフィルタを選択してください",
   "unknown": "不明",
-  "scraping_pages": "{pages}ページをスクレイピング中..."
+  "scraping_pages": "{pages}ページをスクレイピング中...",
+  "fetching_metadata": "メタデータを取得中...",
+  "tagging": "タグ付け中...",
+  "disk_full": "ディスクがいっぱいです",
+  "insufficient_space": "容量不足",
+  "queued": "キュー済み"
 }

@@ -3,3 +3,4 @@ yt-dlp
 curl_cffi
 cloudscraper
 beautifulsoup4
+mutagen

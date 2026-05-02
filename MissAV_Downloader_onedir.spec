@@ -9,8 +9,8 @@ hidden_imports = [
     'flask',
     'yt_dlp',
     'curl_cffi',
-    'curl_cffi.const',               # CRITICAL: Prevents curl_cffi crashes in packaged exe
-    'curl_cffi.requests.impersonate',# CRITICAL: Prevents curl_cffi crashes in packaged exe
+    'curl_cffi.const',
+    'curl_cffi.requests.impersonate',
     'waitress',
     'jinja2',
     'markupsafe',
@@ -38,6 +38,11 @@ hidden_imports = [
     'shutil',
     'pathlib',
     'webbrowser',
+    'mutagen',
+    'mutagen.mp4',
+    'cloudscraper',
+    'bs4',
+    'sqlite3'
 ]
 
 # Collect data files
@@ -45,31 +50,37 @@ datas = [
     ('templates', 'templates'),
     ('locales', 'locales'),
     ('app_files', 'app_files'),
-    # Include documentation files for the in-app viewer
     ('README.md', '.'),
     ('SECURITY.md', '.'),
-    ('LICENSE', '.'),
 ]
 
-# Automatically include localized readmes if they exist
+# Add localized READMEs
 for lang in ['ko', 'ja', 'zh']:
     readme_file = f'README.{lang}.md'
     if os.path.exists(readme_file):
         datas.append((readme_file, '.'))
 
-# Collect curl_cffi runtime data (certificates, impersonation data) - CRITICAL
+# Add License (handle case sensitivity)
+if os.path.exists('License'):
+    datas.append(('License', '.'))
+elif os.path.exists('LICENSE'):
+    datas.append(('LICENSE', '.'))
+
+# Collect curl_cffi runtime data
 datas += collect_data_files('curl_cffi')
 
-# Include spoofdpi
+# Add SpoofDPI (handle cross-platform)
 if os.path.exists('spoofdpi.exe'):
     datas.append(('spoofdpi.exe', '.'))
+elif os.path.exists('spoofdpi'):
+    datas.append(('spoofdpi', '.'))
 
-# Include ffmpeg folder
+# Add FFmpeg folder
 if os.path.exists('ffmpeg'):
     datas.append(('ffmpeg', 'ffmpeg'))
 
 a = Analysis(
-    ['app.py'],
+    ['main.py'],  # Use main.py as entry point
     pathex=[],
     binaries=[],
     datas=datas,
@@ -83,7 +94,7 @@ a = Analysis(
 
 pyz = PYZ(a.pure)
 
-# EXE block: For installers, this MUST be set to onedir mode (exclude_binaries=True)
+# ONEDIR MODE
 exe = EXE(
     pyz,
     a.scripts,
@@ -94,7 +105,7 @@ exe = EXE(
     bootloader_ignore_signals=False,
     strip=False,
     upx=True,
-    console=True,  
+    console=False, # Hidden for better desktop experience
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,
@@ -103,7 +114,6 @@ exe = EXE(
     icon=None,  
 )
 
-# COLLECT block: This creates the folder structure that the installer will use
 coll = COLLECT(
     exe,
     a.binaries,

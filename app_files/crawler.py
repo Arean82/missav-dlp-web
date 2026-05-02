@@ -1,7 +1,7 @@
 # app_files/crawler.py
 import cloudscraper
 from bs4 import BeautifulSoup
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlparse
 import re
 
 def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
@@ -79,9 +79,12 @@ def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
                 continue
 
         # --- IMPROVED EXTRACTION LOGIC ---
+        parsed_base = urlparse(base_url)
+        base_domain = f"{parsed_base.scheme}://{parsed_base.netloc}"
+        
         for a in current_soup.find_all("a", href=True):
             href = a.get("href", "")
-            full_url = urljoin("https://missav.ws", href)
+            full_url = urljoin(base_domain, href)
             
             # Match video URL pattern
             if re.search(r'/en/[a-z]+-\d', full_url):
