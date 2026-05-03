@@ -1,4 +1,9 @@
 # app_files/extractor.py
+# Extracts video information from MissAV using yt-dlp.
+# Note: This file uses external libraries (curl-cffi, yt-dlp) 
+# that are required for advanced features like metadata scraping and file management.
+# These libraries should be installed using:
+# pip install curl-cffi yt-dlp
 
 import re
 from urllib.parse import urlparse
@@ -18,6 +23,7 @@ class MyCustomMissAV(InfoExtractor):
         self._settings = settings or {}
         spoofdpi_port = self._settings.get('spoofdpi_port', 8080)
         self._spoofdpi_proxy = f"http://127.0.0.1:{spoofdpi_port}"
+        self._proxy_bypass_all = self._settings.get('proxy_bypass_all', True)
 
     def _real_extract(self, url):
         video_id = self._match_id(url)
@@ -33,7 +39,7 @@ class MyCustomMissAV(InfoExtractor):
 
         for mirror in mirrors:
             test_url = f"https://{mirror}{path}"
-            proxy_list = [self._spoofdpi_proxy, None] if self._settings.get('spoofdpi_enabled', True) else [None]
+            proxy_list = [self._spoofdpi_proxy, None] if self._proxy_bypass_all else [None]
             for proxy in proxy_list:
                 try:
                     proxies = {"https": proxy, "http": proxy} if proxy else None

@@ -17,9 +17,10 @@ The MissAV Downloader is designed with a focus on user privacy and local-first d
 - **No Analytics**: This application does not contain any tracking, telemetry, or analytics scripts.
 
 ### 🌐 Network Security
-- **Bypass Proxies**: The application uses **SpoofDPI** to bypass SNI-based blocking. This is a local proxy that only affects the downloader's traffic.
+- **Bypass Proxies**: The application uses **SpoofDPI** to bypass SNI-based ISP blocking.
+- **Modular Control**: Users can toggle the proxy specifically for Metadata fetching and Crawling via the "Global Proxy Bypass" setting.
 - **SSL/TLS**: All connections to MissAV and metadata sites are encrypted via HTTPS.
-- **Impersonation**: The app uses `curl_cffi` to impersonate a legitimate browser (Chrome) to prevent Cloudflare blocks, ensuring the traffic looks like normal user browsing.
+- **Impersonation**: The app uses `curl_cffi` to impersonate a legitimate browser (Chrome) to prevent Cloudflare blocks.
 
 ### ⚠️ Recommendations
 - **VPN Usage**: It is highly recommended to run this application behind a VPN (e.g., Gluetun in Docker) to hide your IP address from video providers.

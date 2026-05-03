@@ -4,7 +4,7 @@ FROM python:3.10-slim
 # gcc and libcurl are required for curl_cffi
 # ffmpeg is required for video merging
 RUN apt-get update && \
-    apt-get install -y ffmpeg curl bash gcc libcurl4-openssl-dev && \
+    apt-get install -y ffmpeg curl bash gcc libcurl4-openssl-dev python3-tk && \
     rm -rf /var/lib/apt/lists/*
 
 # 2. Install SpoofDPI (Linux version)

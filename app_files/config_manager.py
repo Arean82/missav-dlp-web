@@ -17,6 +17,7 @@ DEFAULT_SETTINGS = {
     'delay_between_downloads': 3,
     'max_retries': 3,
     'sequential_mode': True,
+    'proxy_bypass_all': True,
     'theme': 'dark',
     'ratelimit': 0  # 0 means no limit
 }

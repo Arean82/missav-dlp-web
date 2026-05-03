@@ -30,3 +30,19 @@ def format_size(bytes):
     elif bytes >= 1_000:
         return f"{bytes / 1_000:.2f} KB"
     return f"{bytes} B"
+
+def get_proxy_config():
+    """
+    Returns proxy configuration if global proxy bypass is enabled.
+    """
+    from .config_manager import load_settings
+    settings = load_settings()
+    
+    if settings.get('proxy_bypass_all', True):
+        port = settings.get('spoofdpi_port', 8080)
+        proxy_url = f"http://127.0.0.1:{port}"
+        return {
+            "http": proxy_url,
+            "https": proxy_url
+        }
+    return None

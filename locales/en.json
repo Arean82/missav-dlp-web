@@ -95,5 +95,6 @@
   "tagging": "Tagging...",
   "disk_full": "Disk Full",
   "insufficient_space": "Insufficient Space",
-  "queued": "Queued"
+  "queued": "Queued",
+  "proxy_bypass_all": "Global Proxy Bypass (SpoofDPI)"
 }

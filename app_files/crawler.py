@@ -1,7 +1,14 @@
 # app_files/crawler.py
+# Scrapes videos from a MissAV series/maker page
+# Note: This file uses external libraries (cloudscraper, BeautifulSoup) 
+# that are required for advanced features like metadata scraping and file management.
+# These libraries should be installed using:
+# pip install cloudscraper beautifulsoup4 mutagen
+
 import cloudscraper
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urlparse
+from .utils import get_proxy_config
 import re
 
 def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
@@ -37,7 +44,7 @@ def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
     
     # Fetch initial page
     try:
-        res = scraper.get(target_url)
+        res = scraper.get(target_url, proxies=get_proxy_config())
         soup = BeautifulSoup(res.text, "html.parser")
     except Exception as e:
         print(f"Error fetching page: {e}")
@@ -73,7 +80,7 @@ def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
             current_soup = soup
         else:
             try:
-                res = scraper.get(url)
+                res = scraper.get(url, proxies=get_proxy_config())
                 current_soup = BeautifulSoup(res.text, "html.parser")
             except:
                 continue
@@ -126,7 +133,7 @@ def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
 def get_filters(base_url):
     scraper = cloudscraper.create_scraper()
     try:
-        res = scraper.get(base_url)
+        res = scraper.get(base_url, proxies=get_proxy_config())
         soup = BeautifulSoup(res.text, "html.parser")
     except:
         return {'filters': {"All": None}, 'current_filter': None, 'clean_base_url': base_url.split("?")[0]}

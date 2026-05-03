@@ -1,4 +1,5 @@
-# app_files/event_bus.py - Simple Event System for SSE
+# app_files/event_bus.py 
+# Simple Event System for SSE
 
 import queue
 import json
@@ -18,11 +19,10 @@ class EventBus:
 
     def publish(self, event_type, data):
         message = json.dumps({"type": event_type, "data": data})
-        for q in self.subscribers:
+        for q in self.subscribers[:]: # Iterate over a copy to allow removal
             try:
                 q.put_nowait(message)
             except queue.Full:
-                # Remove stale subscribers
-                pass
+                self.unsubscribe(q)
 
 event_bus = EventBus()

@@ -116,6 +116,14 @@ lang_manager.init_app(app)
 def index():
     return render_template('index.html')
 
+@app.route('/logo.png')
+def get_logo():
+    """Serve the application logo"""
+    logo_path = ROOT_DIR / 'locales' / 'logo.png'
+    if logo_path.exists():
+        return send_file(logo_path, mimetype='image/png')
+    return jsonify({"status": "error"}), 404
+
 # API routes for language management
 @app.route('/api/language', methods=['GET'])
 def get_language():

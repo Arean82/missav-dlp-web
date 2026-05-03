@@ -1,4 +1,9 @@
-# app_files/metadata_tagger.py - Scrapes and injects metadata into MP4 files
+# app_files/metadata_tagger.py 
+# Scrapes and injects metadata into MP4 files
+# Note: This file uses external libraries (cloudscraper, BeautifulSoup, mutagen) 
+# that are required for advanced features like metadata scraping and file management.
+# These libraries should be installed using:
+# pip install cloudscraper beautifulsoup4 mutagen
 
 import os
 import re
@@ -8,6 +13,7 @@ import requests
 from bs4 import BeautifulSoup
 from pathlib import Path
 from urllib.parse import urljoin, urlparse
+from .utils import get_proxy_config
 
 try:
     from mutagen.mp4 import MP4, MP4Cover
@@ -38,7 +44,7 @@ def fetch_fallback_metadata(code):
     try:
         logger.info(f"Trying BestJavPorn for {code}...")
         search_url = f"https://www.bestjavporn.com/search/{code}/"
-        res = scraper.get(search_url, timeout=10)
+        res = scraper.get(search_url, timeout=10, proxies=get_proxy_config())
         soup = BeautifulSoup(res.text, 'html.parser')
         
         video_link = None
@@ -48,7 +54,7 @@ def fetch_fallback_metadata(code):
                 break
         
         if video_link:
-            res = scraper.get(video_link, timeout=10)
+            res = scraper.get(video_link, timeout=10, proxies=get_proxy_config())
             soup = BeautifulSoup(res.text, 'html.parser')
             title = soup.find('h1').text.strip() if soup.find('h1') else ""
             
@@ -80,7 +86,7 @@ def fetch_fallback_metadata(code):
     try:
         logger.info(f"Trying JavGuru for {code}...")
         search_url = f"https://jav.guru/?s={code}"
-        res = scraper.get(search_url, timeout=10)
+        res = scraper.get(search_url, timeout=10, proxies=get_proxy_config())
         soup = BeautifulSoup(res.text, 'html.parser')
         
         video_link = None
@@ -130,7 +136,7 @@ def fetch_missav_metadata(url_or_code, mirrors=None):
         target_url = f"https://{mirror}/en/{url_or_code.lower()}"
 
     try:
-        res = scraper.get(target_url, timeout=15)
+        res = scraper.get(target_url, timeout=15, proxies=get_proxy_config())
         soup = BeautifulSoup(res.text, 'html.parser')
         
         if not soup or not soup.find('h1'):
@@ -237,7 +243,7 @@ def inject_metadata(filepath, metadata):
         thumb_url = metadata.get("thumb_url")
         if thumb_url:
             try:
-                img_res = requests.get(thumb_url, timeout=10)
+                img_res = requests.get(thumb_url, timeout=10, proxies=get_proxy_config())
                 if img_res.status_code == 200:
                     fmt = MP4Cover.FORMAT_PNG if thumb_url.lower().endswith(".png") else MP4Cover.FORMAT_JPEG
                     video["covr"] = [MP4Cover(img_res.content, imageformat=fmt)]

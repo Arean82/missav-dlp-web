@@ -4,3 +4,7 @@ curl_cffi
 cloudscraper
 beautifulsoup4
 mutagen
+flask
+customtkinter
+Pillow
+PyInstaller

@@ -95,5 +95,6 @@
   "tagging": "タグ付け中...",
   "disk_full": "ディスクがいっぱいです",
   "insufficient_space": "容量不足",
-  "queued": "キュー済み"
+  "queued": "待機中",
+  "proxy_bypass_all": "グローバルプロキシバイパス (SpoofDPI)"
 }

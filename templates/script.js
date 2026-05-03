@@ -97,76 +97,81 @@ async function fetchTasks() {
             <span class="stat">✅ ${_('completed')}: ${stats.completed}</span>
             <span class="stat">❌ ${_('failed')}: ${stats.failed}</span>
         `;
-        
-        const listEl = document.getElementById('taskList');
-        const entries = Object.entries(tasks);
-        if (entries.length === 0) {
-            listEl.innerHTML = `<div style="text-align:center; padding:20px;">${_('no_downloads')}</div>`;
-            return;
+        if (data.tasks) {
+            renderTasks(data.tasks);
+        }
+    } catch(e) { console.error(e); }
+}
+
+function renderTasks(tasks) {
+    const listEl = document.getElementById('taskList');
+    const entries = Object.entries(tasks);
+    if (entries.length === 0) {
+        listEl.innerHTML = `<div style="text-align:center; padding:20px;">${_('no_downloads')}</div>`;
+        return;
+    }
+    
+    listEl.innerHTML = entries.reverse().map(([id, t]) => {
+        let cls = '';
+        let statusText = '';
+        if (t.status === 'Completed') {
+            cls = 'completed';
+            statusText = _('completed');
+        } else if (t.status === 'Cancelled') {
+            cls = 'cancelled';
+            statusText = _('cancelled');
+        } else if (t.status && t.status.startsWith('Error')) {
+            cls = 'error';
+            statusText = _('failed');
+        } else if (t.status === 'Downloading') {
+            cls = 'downloading';
+            statusText = _('downloading');
+        } else {
+            statusText = t.status;
         }
         
-        listEl.innerHTML = entries.reverse().map(([id, t]) => {
-            let cls = '';
-            let statusText = '';
-            if (t.status === 'Completed') {
-                cls = 'completed';
-                statusText = _('completed');
-            } else if (t.status === 'Cancelled') {
-                cls = 'cancelled';
-                statusText = _('cancelled');
-            } else if (t.status && t.status.startsWith('Error')) {
-                cls = 'error';
-                statusText = _('failed');
-            } else if (t.status === 'Downloading') {
-                cls = 'downloading';
-                statusText = _('downloading');
-            } else {
-                statusText = t.status;
-            }
-            
-            const progress = t.progress || 0;
-            const stage = t.stage || '';
-            const title = t.filename || (t.url ? t.url.substring(0, 50) : 'Unknown');
-            
-            // Build metadata string (Resolution | Size | Time)
-            const metaInfo = [
-                t.resolution ? `📐 ${t.resolution}` : '',
-                t.filesize ? `💾 ${formatSize(t.filesize)}` : '',
-                t.time_taken ? `⏱️ ${formatTime(t.time_taken)}` : ''
-            ].filter(Boolean).join(' | ');
-            
-            const thumbHtml = t.thumb_url 
-                ? `<div class="task-thumb"><img src="${t.thumb_url}" alt="thumb"></div>`
-                : `<div class="task-thumb"><i class="fas fa-video"></i></div>`;
-            
-            return `
-                <div class="task-card ${cls}">
-                    ${thumbHtml}
-                    <div class="task-main">
-                        <div class="task-top">
-                            <div style="flex:1">
-                                <strong>${escapeHtml(title)}</strong>
-                                <div style="font-size:12px; opacity:0.8">${statusText} ${stage ? `- ${stage}` : ''}</div>
-                                ${metaInfo ? `<div style="font-size:11px; margin-top:4px; color:#aaa;">${metaInfo}</div>` : ''}
-                            </div>
-                            <div class="task-actions">
-                                ${(t.status === 'Downloading' || t.status === 'Waiting') ? 
-                                    `<button onclick="cancelTask('${id}')" class="btn-secondary" style="padding:5px 10px; margin-right:5px;" title="${_('stop')}">🛑</button>` : ''
-                                }
-                                <button onclick="deleteTask('${id}')" class="btn-danger" style="padding:5px 10px" title="${_('delete')}">✕</button>
-                            </div>
+        const progress = t.progress || 0;
+        const stage = t.stage || '';
+        const title = t.filename || (t.url ? t.url.substring(0, 50) : 'Unknown');
+        
+        // Build metadata string (Resolution | Size | Time)
+        const metaInfo = [
+            t.resolution ? `📐 ${t.resolution}` : '',
+            t.filesize ? `💾 ${formatSize(t.filesize)}` : '',
+            t.time_taken ? `⏱️ ${formatTime(t.time_taken)}` : ''
+        ].filter(Boolean).join(' | ');
+        
+        const thumbHtml = t.thumb_url 
+            ? `<div class="task-thumb"><img src="${t.thumb_url}" alt="thumb"></div>`
+            : `<div class="task-thumb"><i class="fas fa-video"></i></div>`;
+        
+        return `
+            <div class="task-card ${cls}">
+                ${thumbHtml}
+                <div class="task-main">
+                    <div class="task-top">
+                        <div style="flex:1">
+                            <strong>${escapeHtml(title)}</strong>
+                            <div style="font-size:12px; opacity:0.8">${statusText} ${stage ? `- ${stage}` : ''}</div>
+                            ${metaInfo ? `<div style="font-size:11px; margin-top:4px; color:#aaa;">${metaInfo}</div>` : ''}
                         </div>
-                        ${(t.status === 'Downloading' || t.status === 'Waiting') ? `
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${progress}%"></div>
-                            </div>
-                            <div style="font-size:12px; margin-top:5px">${progress}%</div>
-                        ` : ''}
+                        <div class="task-actions">
+                            ${(t.status === 'Downloading' || t.status === 'Waiting') ? 
+                                `<button onclick="cancelTask('${id}')" class="btn-secondary" style="padding:5px 10px; margin-right:5px;" title="${_('stop')}">🛑</button>` : ''
+                            }
+                            <button onclick="deleteTask('${id}')" class="btn-danger" style="padding:5px 10px" title="${_('delete')}">✕</button>
+                        </div>
                     </div>
+                    ${(t.status === 'Downloading' || t.status === 'Waiting') ? `
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${progress}%"></div>
+                        </div>
+                        <div style="font-size:12px; margin-top:5px">${progress}%</div>
+                    ` : ''}
                 </div>
-            `;
-        }).join('');
-    } catch(e) { console.error(e); }
+            </div>
+        `;
+    }).join('');
 }
 
 async function deleteTask(id) {
@@ -190,6 +195,7 @@ async function fetchFiles() {
         
         const headerEl = document.getElementById('fileListHeader');
         const deleteSelectedBtn = document.getElementById('deleteSelectedFilesBtn');
+        const listEl = document.getElementById('fileList');
         
         if (filtered.length === 0) {
             listEl.innerHTML = `<div style="text-align:center; padding:20px;">${_('no_files')}</div>`;
@@ -352,6 +358,7 @@ function populateSettingsForm(settings) {
     document.getElementById('settingsDelay').value = settings.delay_between_downloads || 3;
     document.getElementById('settingsRateLimit').value = settings.ratelimit || 0;
     document.getElementById('settingsQuality').value = settings.video_quality || 'best';
+    document.getElementById('settingsProxyBypass').checked = settings.proxy_bypass_all !== false;
     
     const mirrors = settings.mirrors || ['missav.ai', 'missav.net', 'missav123.com', 'missav.com', 'missav.ws'];
     document.getElementById('settingsMirrors').value = mirrors.join('\n');
@@ -440,6 +447,7 @@ document.getElementById('saveSettingsBtn').onclick = async () => {
             delay_between_downloads: parseInt(document.getElementById('settingsDelay').value),
             ratelimit: parseInt(document.getElementById('settingsRateLimit').value) || 0,
             video_quality: document.getElementById('settingsQuality').value,
+            proxy_bypass_all: document.getElementById('settingsProxyBypass').checked,
             mirrors: document.getElementById('settingsMirrors').value.split('\n').filter(l => l.trim())
         };
         

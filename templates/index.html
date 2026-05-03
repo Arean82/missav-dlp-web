@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎬 MissAV Downloader</title>
+    <title>MissAV Downloader</title>
+    <link rel="icon" type="image/png" href="/logo.png">
     <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{ url_for('static', filename='marked.min.js') }}"></script>
@@ -12,7 +13,10 @@
 <body>
 <div class="container">
     <div class="header">
-        <h1>🎬 <span data-i18n="app_title">MissAV Downloader</span></h1>
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="/logo.png" alt="Logo" style="height: 50px; width: auto;">
+            <h1><span data-i18n="app_title">MissAV Downloader</span></h1>
+        </div>
         <div class="header-controls">
             <select id="languageSelect" class="language-select">
                 <option value="en">🇬🇧 English</option>
@@ -157,6 +161,11 @@
                 <option value="360p">360p</option>
                 <option value="240p">240p</option>
             </select>
+        </div>
+        <div class="setting-group">
+            <label class="checkbox-label">
+                <input type="checkbox" id="settingsProxyBypass"> <span data-i18n="proxy_bypass_all">Global Proxy Bypass (SpoofDPI)</span>
+            </label>
         </div>
         <div class="setting-group">
             <label><span data-i18n="mirror_domains">Mirror Domains (one per line)</span>:</label>

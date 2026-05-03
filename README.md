@@ -51,6 +51,7 @@ Built with `curl_cffi` and `yt-dlp` to bypass ISP blocking (SNI) and Cloudflare'
 - **Safety**: Added **Disk Space Guard** with Docker mount-point detection.
 - **Intelligence**: Added **Multi-Site Fallback** (BestJavPorn/JavGuru) for missing tags.
 - **Stability**: Refined process lifecycle to prevent orphaned SpoofDPI instances.
+- **Control**: Added **Modular Global Proxy** toggle for user-defined metadata/crawler bypass.
 
 ## 🛠️ Installation & Usage
 
@@ -175,8 +176,8 @@ You can also edit `.settings.json` directly:
   "max_concurrent": 1,
   "ffmpeg_path": "",
   "filename_template": "[%(id)s] %(title).60s.%(ext)s",
-  "filename_template": "[%(id)s] %(title).60s.%(ext)s",
   "spoofdpi_enabled": true,
+  "proxy_bypass_all": true,
   "video_quality": "best",
   "mirrors": ["missav.ai", "missav.net", "missav123.com", "missav.com", "missav.ws"],
   "download_dir": "./downloads",
@@ -357,6 +358,8 @@ This project is based on the excellent work by **[nerdnam](https://github.com/ne
 - **Safety**: Added **Disk Space Guard** with Docker mount-point detection.
 - **Intelligence**: Added **Multi-Site Fallback** (BestJavPorn/JavGuru) for missing tags.
 - **Stability**: Refined process lifecycle to prevent orphaned SpoofDPI instances.
+- **Modular Proxy**: Added a global toggle to apply SpoofDPI bypass to metadata and crawling.
+- **Industrial Launcher**: Brand new CustomTkinter UI with Light/Dark theme support and Windows taskbar integration.
 
 ### Version 3.1
 

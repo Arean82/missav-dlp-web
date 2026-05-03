@@ -5,43 +5,16 @@ import os
 from PyInstaller.utils.hooks import collect_data_files, collect_submodules
 
 hidden_imports = [
-    'flask',
-    'yt_dlp',
-    'curl_cffi',
-    'curl_cffi.const',
-    'curl_cffi.requests.impersonate',
-    'waitress',
-    'jinja2',
-    'markupsafe',
-    'itsdangerous',
-    'click',
-    'werkzeug',
-    'werkzeug.utils',
-    'werkzeug.routing',
-    'werkzeug.wsgi',
-    'certifi',
-    'brotli',
-    'brotli._brotli',
-    'charset_normalizer',
-    'idna',
-    'urllib3',
-    'json',
-    're',
-    'time',
-    'threading',
-    'queue',
-    'uuid',
-    'logging',
-    'subprocess',
-    'platform',
-    'shutil',
-    'pathlib',
-    'webbrowser',
-    'mutagen',
-    'mutagen.mp4',
-    'cloudscraper',
-    'bs4',
-    'sqlite3'
+    'flask', 'yt_dlp', 'curl_cffi', 'curl_cffi.const', 
+    'curl_cffi.requests.impersonate', 'waitress', 'jinja2', 
+    'markupsafe', 'itsdangerous', 'click', 'werkzeug', 
+    'werkzeug.utils', 'werkzeug.routing', 'werkzeug.wsgi', 
+    'certifi', 'brotli', 'brotli._brotli', 'charset_normalizer', 
+    'idna', 'urllib3', 'json', 're', 'time', 'threading', 
+    'queue', 'uuid', 'logging', 'subprocess', 'platform', 
+    'shutil', 'pathlib', 'webbrowser', 'mutagen', 'mutagen.mp4', 
+    'cloudscraper', 'bs4', 'sqlite3', 'customtkinter', 'PIL', 
+    'PIL._tkinter_finder'
 ]
 
 datas = [
@@ -49,23 +22,20 @@ datas = [
     ('locales', 'locales'),
     ('app_files', 'app_files'),
     ('README.md', '.'),
+    ('README.ko.md', '.'),
+    ('README.ja.md', '.'),
+    ('README.zh.md', '.'),
     ('SECURITY.md', '.'),
 ]
 
-# Add localized READMEs
-for lang in ['ko', 'ja', 'zh']:
-    readme_file = f'README.{lang}.md'
-    if os.path.exists(readme_file):
-        datas.append((readme_file, '.'))
-
-# Add License (handle case sensitivity)
 if os.path.exists('License'):
     datas.append(('License', '.'))
 elif os.path.exists('LICENSE'):
     datas.append(('LICENSE', '.'))
 
-# Collect curl_cffi runtime data
+# Collect runtime data
 datas += collect_data_files('curl_cffi')
+datas += collect_data_files('customtkinter')
 
 # Add SpoofDPI (handle cross-platform)
 if os.path.exists('spoofdpi.exe'):
@@ -78,7 +48,7 @@ if os.path.exists('ffmpeg'):
     datas.append(('ffmpeg', 'ffmpeg'))
 
 a = Analysis(
-    ['main.py'],  # Use main.py as the entry point
+    ['main.py'],
     pathex=[],
     binaries=[],
     datas=datas,
@@ -110,5 +80,5 @@ exe = EXE(
     target_arch=None,
     codesign_identity=None,
     entitlements_file=None,
-    icon=None,
+    icon='locales/logo.png',
 )

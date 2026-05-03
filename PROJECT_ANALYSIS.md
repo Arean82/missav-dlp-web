@@ -1,8 +1,8 @@
-# Project Analysis: MissAV Downloader (Web) - Version 4.0 Final Report
+# Project Analysis: MissAV Downloader (Web) - Version 4.0 Stable
 
-This document summarizes the audit, implementation status, and final production state of the **MissAV Downloader** v4.0 ecosystem.
+This document summarizes the audit, implementation status, and production state of the **MissAV Downloader** ecosystem following the final production hardening.
 
-## 🛠️ Core Infrastructure & Safety (v4.0 Hardened)
+## 🛠️ Core Infrastructure & Safety (Hardened)
 
 | Status | Feature / Issue | Transformation | Result |
 | :--- | :--- | :--- | :--- |
@@ -23,38 +23,23 @@ This document summarizes the audit, implementation status, and final production 
 | ✅ | **Multi-Site Fallback** | Missing tags on primary mirrors. | **BestJavPorn/JavGuru** fallback logic enabled. |
 | ✅ | **Parallel Workers** | Unmanaged or single-threaded downloads. | **Dynamic Worker Queue** (adjustable on-the-fly). |
 | ✅ | **FFmpeg Validation** | Missing binaries caused silent failures. | **Auto-Verification** of ffmpeg/ffprobe before save. |
+| ✅ | **Modular Proxy** | Connectivity issues in blocked regions. | **Global Proxy Bypass** toggle added to Settings. |
 
-## 📦 Distribution & Build Pipeline
+---
 
-| Status | Target | Description | Automation |
+## 🔍 Audit & Remediation (Final Hardening)
+
+| Status | Issue | Transformation | Result |
 | :--- | :--- | :--- | :--- |
-| ✅ | **Docker** | Headless/Server deployment. | `Dockerfile` + `docker-compose.yml` with persistence. |
-| ✅ | **Windows** | Single-file desktop executable. | `build.bat` + Optimized `.spec` (Console Hidden). |
-| ✅ | **Linux/Mac** | Native Unix binaries. | `build.sh` (Auto-venv + Auto-SpoofDPI download). |
-| ✅ | **Localization** | Global user support. | **4 Languages** (EN, KO, JA, ZH) fully synchronized. |
-
-## 🎨 UI & UX Design Decisions
-
-| Status | Component | Outcome | Rationale |
-| :--- | :--- | :--- | :--- |
-| ✅ | **Visual Theme** | **Professional Navy** | Retained high-contrast layout for usability and speed. |
-| ✅ | **Micro-UI** | **Interactive Buttons** | Added hover-lift effects, gradients, and shadow depth. |
-| ✅ | **Doc Viewer** | **In-App Modal** | README, SECURITY, and LICENSE viewable inside the UI. |
-| ✅ | **Multi-Mirror** | **Manual/Speed Check** | Prioritized user control over automatic (broken) discovery. |
-
-## 🚫 Rejected Features & Design Decisions
-
-| Feature | Status | Reason for Rejection |
-| :--- | :--- | :--- |
-| **Full UI Overhaul** | ❌ Rejected | User preferred the original simple navy layout. Glassmorphism and heavy styling were rejected to prioritize speed and familiarity. |
-| **Auto-Mirror Discovery** | ❌ Rejected | User preferred **Manual Management**. Discovery scripts are prone to breakage; manual entry ensures the highest reliability for production users. |
-| **Naming Presets** | ❌ Rejected | My suggestion for custom naming templates was rejected. User preferred keeping the **Title + Code** as provided by the website for better alignment with source metadata. |
-| **Global Multi-Site Logic** | ❌ Rejected | User specified that fallback sites (JavGuru/BestJavPorn) should only be used if MissAV is missing tags, never as a primary replacement. |
-| **yt-dlp Auto-Updater** | ⚠️ On Hold | Building as an EXE/Bin file prevents simple `pip install` updates. Alternative update methods are being considered but were not prioritized for v4.0. |
+| ✅ | **Frontend Rendering** | Missing `renderTasks` function. | Extracted logic into shared `renderTasks` function. |
+| ✅ | **File Management** | Undefined `listEl` in `fetchFiles`. | Correctly scoped DOM reference for downloads list. |
+| ✅ | **Connectivity** | Proxy bypass gaps in Crawler/Tags. | Centralized proxy helper in `utils.py` implemented. |
+| ✅ | **Resource Leak** | SSE subscriber queue overflow. | Auto-unsubscribing full queues in `event_bus.py`. |
+| ✅ | **Log Clarity** | Technical stdout pollution. | Redirected format logic to task-specific loggers. |
 
 ---
 
 ## 🏁 Final Verdict
-The application has been successfully transformed into a **Production-Ready, Industrial-Grade** tool. By moving from a "script-wrapper" architecture to a **Persistent, Reactive, and Self-Configuring Service**, MissAV Downloader v4.0 stands as a robust solution for high-volume media archival across Windows, Linux, and Docker environments.
+The application has been successfully hardened and is confirmed to be **Stable Version 4.0**. With the integration of the **Modular Proxy System** and the resolution of critical frontend rendering bugs, MissAV Downloader is now fully reliable for high-volume archival in both open and restricted network environments.
 
-**Project Status: ✅ Version 4.0 RELEASED.**
+**Project Status: ✅ Version 4.0 RELEASED (Stable).**

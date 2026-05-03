@@ -1,4 +1,9 @@
 # app_files/download_manager.py
+# Handles downloading videos using yt-dlp and manages download queue
+# Note: This file uses external libraries (yt-dlp, cloudscraper, BeautifulSoup, mutagen) 
+# that are required for advanced features like metadata scraping and file management.
+# These libraries should be installed using:
+# pip install cloudscraper beautifulsoup4 mutagen yt-dlp
 
 import os
 import time
@@ -148,23 +153,31 @@ def download_video(task_id, url, selected_format=None):
     task_logger.info(f"Starting download: {url}")
     
     # 2. Progress hook (strictly inside the function)
+    last_logged_p = -1
     def progress_hook(d):
+        nonlocal last_logged_p
         if task_id not in tasks or tasks[task_id].get('status') == 'Cancelled':
             raise DownloadCancelled("Cancelled")
         if d['status'] == 'downloading':
             p = d.get('_percent_str', '0%')
             p_clean = re.sub(r'\x1b[^m]*m', '', p).strip().replace('%', '')
             try:
-                task['progress'] = float(p_clean)
+                prog_val = float(p_clean)
+                task['progress'] = prog_val
                 task['stage'] = 'Downloading'
-                # We don't save DB on EVERY progress % to avoid IO overhead, 
-                # but we'll save every 5% or so
-                if int(task['progress']) % 5 == 0:
+                
+                # Only log to file when the percentage hits a 5% interval (e.g. 5%, 10%, 15%...)
+                prog_int = int(prog_val)
+                if prog_int % 5 == 0 and prog_int > last_logged_p:
+                    task_logger.info(f"Progress: {prog_int}%")
+                    last_logged_p = prog_int
+
+                # Save to DB every 5% to reduce IO
+                if prog_int % 5 == 0:
                     save_task(task)
                 
                 # Always publish to SSE for smooth UI updates
                 publish_task_update()
-                task_logger.info(f"Progress: {p_clean}%")
             except (ValueError, TypeError):
                 task['progress'] = 0
         elif d['status'] == 'finished':
@@ -188,7 +201,7 @@ def download_video(task_id, url, selected_format=None):
                 f'best[height<{selected_height}]/'
                 f'best'
             )
-            print(f"[FORMAT] Requested: {selected_height}p, Selector: {format_selector}")
+            task_logger.info(f"Requested format: {selected_height}p, Selector: {format_selector}")
     # --- NEW FORMAT LOGIC END ---
      
     # Record the resolution for the UI
