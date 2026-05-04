@@ -40,7 +40,7 @@ This document summarizes the audit, implementation status, and production state 
 | ✅     | **Log Clarity**        | Technical stdout pollution.             | Redirected format logic to task-specific loggers.     |
 | ✅     | **Thread Safety**      | EventBus race condition in SSE.         | Implemented `threading.Lock` for subscriber lists.    |
 | ✅     | **Terminal State**     | Failed mirrors left tasks "stuck".      | Added explicit save/publish on mirror exhaustion.     |
-| ⏳     | **Path Selection**     | Manual path entry is error-prone.       | **Internal Folder Browser**: Modal-based explorer.    |
+| ✅     | **Path Selection**     | Manual path entry is error-prone.       | **Internal Folder Browser**: Modal-based explorer.    |
 
 ---
 

@@ -96,5 +96,8 @@
   "disk_full": "ディスクがいっぱいです",
   "insufficient_space": "容量不足",
   "queued": "待機中",
-  "proxy_bypass_all": "グローバルプロキシバイパス (SpoofDPI)"
+  "proxy_bypass_all": "グローバルプロキシバイパス (SpoofDPI)",
+  "ffmpeg_path": "FFmpeg実行ファイルのディレクトリ",
+  "browse_folders": "フォルダを参照",
+  "select_folder": "フォルダを選択"
 }

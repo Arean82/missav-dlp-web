@@ -96,5 +96,8 @@
   "disk_full": "Disk Full",
   "insufficient_space": "Insufficient Space",
   "queued": "Queued",
-  "proxy_bypass_all": "Global Proxy Bypass (SpoofDPI)"
+  "proxy_bypass_all": "Global Proxy Bypass (SpoofDPI)",
+  "ffmpeg_path": "FFmpeg Bin Directory",
+  "browse_folders": "Browse Folders",
+  "select_folder": "Select Folder"
 }

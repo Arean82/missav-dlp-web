@@ -41,6 +41,7 @@ Built with `curl_cffi` and `yt-dlp` to bypass ISP blocking (SNI) and Cloudflare'
 - **🗑️ Clean History:** One-click button in the UI to completely wipe all downloaded files from the server.
 - **📄 Documentation Viewer:** Built-in modal to view localized README, SECURITY, and LICENSE files directly from the web interface.
 - **🔗 Custom URL Crawler:** Enter a series, maker, or search URL, select a filter, choose how many pages to scrape, and batch select videos to download directly from the results.
+- **📂 Interactive Folder Browser:** Securely browse and select download paths and FFmpeg directories directly from the web UI (Docker & Portable compatible).
 
 ### Version 4.0 (Industrial Grade)
 
@@ -52,6 +53,7 @@ Built with `curl_cffi` and `yt-dlp` to bypass ISP blocking (SNI) and Cloudflare'
 - **Intelligence**: Added **Multi-Site Fallback** (BestJavPorn/JavGuru) for missing tags.
 - **Stability**: Refined process lifecycle to prevent orphaned SpoofDPI instances.
 - **Control**: Added **Modular Global Proxy** toggle for user-defined metadata/crawler bypass.
+- **Precision**: Added **Interactive Folder Browser** for secure path selection without manual typing.
 
 ## 🛠️ Installation & Usage
 
@@ -302,6 +304,7 @@ The application provides REST API endpoints:
 | `/api/files/clean_history` | POST     | Delete all downloaded files                             |
 | `/api/crawl`               | POST     | Scrape videos from a URL with filter/pagination |
 | `/api/crawl/filters`       | POST     | Get available filters for a URL |
+| `/api/utils/ls`            | POST     | Securely browse and list server-side directories |
 
 ## ⚠️ Disclaimer
 
@@ -360,6 +363,7 @@ This project is based on the excellent work by **[nerdnam](https://github.com/ne
 - **Stability**: Refined process lifecycle to prevent orphaned SpoofDPI instances.
 - **Modular Proxy**: Added a global toggle to apply SpoofDPI bypass to metadata and crawling.
 - **Industrial Launcher**: Brand new CustomTkinter UI with Light/Dark theme support and Windows taskbar integration.
+- **Path Selection**: Implemented **Interactive Folder Browser** for secure, visual path selection (Docker compatible).
 
 ### Version 3.1
 

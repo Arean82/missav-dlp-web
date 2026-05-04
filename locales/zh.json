@@ -96,5 +96,8 @@
   "disk_full": "磁盘已满",
   "insufficient_space": "空间不足",
   "queued": "排队中",
-  "proxy_bypass_all": "全局代理绕过 (SpoofDPI)"
+  "proxy_bypass_all": "全局代理绕过 (SpoofDPI)",
+  "ffmpeg_path": "FFmpeg 可执行文件目录",
+  "browse_folders": "浏览文件夹",
+  "select_folder": "选择文件夹"
 }

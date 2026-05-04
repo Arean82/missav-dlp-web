@@ -355,3 +355,21 @@ button:active {
     cursor: pointer;
     font-size: 14px;
 }
+
+/* Folder Browser Styles */
+.browser-item {
+    transition: background 0.2s;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+
+.browser-item:hover {
+    background: #1a1a2e !important;
+    color: #00d9ff;
+}
+
+#browserList {
+    scrollbar-width: thin;
+    scrollbar-color: #00d9ff #1a1a2e;
+}

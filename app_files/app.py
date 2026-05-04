@@ -442,6 +442,50 @@ def crawl():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 500
 
+# --- UTILS / BROWSER ROUTES ---
+
+@app.route('/api/utils/ls', methods=['POST'])
+def list_directory():
+    data = request.json or {}
+    target_path = data.get('path', '')
+    
+    if not target_path:
+        # Default to root or current working directory
+        target_path = str(Path.cwd())
+        
+    try:
+        p = Path(target_path).resolve()
+        
+        # Security: Ensure path exists. We don't restrict to ROOT_DIR because users 
+        # might want to download to other drives/mounts.
+        if not p.exists() or not p.is_dir():
+            # Fallback to current if path is invalid
+            p = Path.cwd()
+            
+        subfolders = []
+        # Sort folders alphabetically
+        try:
+            for item in sorted(p.iterdir(), key=lambda x: x.name.lower()):
+                try:
+                    if item.is_dir():
+                        subfolders.append({
+                            "name": item.name,
+                            "path": str(item.resolve())
+                        })
+                except (PermissionError, OSError):
+                    continue
+        except (PermissionError, OSError) as e:
+            return jsonify({"status": "error", "message": f"Permission denied: {str(e)}"}), 403
+        
+        return jsonify({
+            "status": "success",
+            "current_path": str(p),
+            "parent_path": str(p.parent) if p.parent != p else None,
+            "folders": subfolders
+        })
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 500
+
 # New API route to get available filters for a given URL
 @app.route('/api/crawl/filters', methods=['POST'])
 def crawl_filters():

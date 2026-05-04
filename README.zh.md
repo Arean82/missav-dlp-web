@@ -31,8 +31,9 @@
 - **⚡ 动态并行下载：** 可在设置中动态调整并发下载线程数量，无需重启应用，多余线程会安全终止。
 - **🔧 自定义 FFmpeg 路径：** 可在 Web UI 中指定 FFmpeg 二进制目录，保存前会自动验证 `ffmpeg`、`ffprobe` 和 `ffplay` 是否存在。
 - **🗑️ 清理历史：** UI 中提供一键按钮，用于完全删除服务器上的所有下载文件。
-- **📄 文档查看器：** 内置弹窗，可直接查看本地化的 README、SECURITY 和 LICENSE 文件。
-- **🔗 自定义URL爬虫：** 输入系列、厂商或搜索URL，选择筛选器，选择要抓取的页数，然后直接从结果中选择视频下载。
+- **📄 文档查看器：** 内置模态框，可直接在 Web 界面查看本地 README、SECURITY 和 LICENSE 文件。
+- **🔗 自定义 URL 爬虫：** 输入系列、片商或搜索 URL，选择过滤器，选择要抓取的页数，然后直接从结果中批量选择视频进行下载。
+- **📂 交互式文件夹浏览器：** 直接从 Web UI 安全地浏览和选择下载路径及 FFmpeg 目录（兼容 Docker 和便携版）。
 
 ## 🛠️ 安装与使用
 
@@ -282,7 +283,8 @@ pyinstaller --clean MissAV_Downloader_onefile.spec
 | `/api/docs/<type>`         | GET      | 获取本地化文档（readme, security, license） |
 | `/api/files/clean_history` | POST     | 删除所有下载文件                           |
 | `/api/crawl`              | POST     | 使用筛选器/分页从URL抓取视频 |
-| `/api/crawl/filters`      | POST     | 获取URL可用的筛选器 |
+| `/api/crawl/filters`       | POST     | 获取 URL 的可用过滤器 |
+| `/api/utils/ls`            | POST     | 安全地浏览和列出服务器端目录 |
 
 ## ⚠️ 免责声明
 
@@ -339,8 +341,9 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 - **可视化队列**: 任务列表新增 **120px 缩略图**。
 - **安全保障**: 新增具备 Docker 挂载点检测功能的 **磁盘空间保护**。
 - **智能回退**: 新增 **多站点回退** (BestJavPorn/JavGuru) 以补全缺失标签。
-- **模块化代理**: 新增全局开关，允许用户自定义是否将 SpoofDPI 代理应用于元数据抓取和爬虫。
-- **工业级启动器**: 全新 CustomTkinter 界面，支持亮色/暗色主题及 Windows 任务栏集成。
+- **模块化代理**：添加全局开关，可将 SpoofDPI 绕过应用于元数据抓取和爬虫。
+- **工业级启动器**：全新的 CustomTkinter UI，支持浅色/深色主题并集成 Windows 任务栏。
+- **路径选择**：实现了 **交互式文件夹浏览器**，用于安全、可视化的路径选择（兼容 Docker）。
 - **稳定性**: 优化进程生命周期，防止产生孤儿 SpoofDPI 实例。
 
 ### Version 3.1
