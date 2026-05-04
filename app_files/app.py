@@ -19,7 +19,7 @@ from .crawler import scrape_videos, get_filters
 from .paths import ROOT_DIR, DOWNLOADS_DIR, SETTINGS_FILE
 from .download_manager import (
     get_video_info, add_download, add_batch, tasks, get_queue_stats,
-    clear_queue, clean_completed, adjust_workers, cancel_task
+    clear_queue, clean_completed, adjust_workers, cancel_task, delete_task_from_queue
 )
 from .db_manager import delete_task_db
 from .config_manager import load_settings, save_settings
@@ -230,9 +230,7 @@ def task_cancel(task_id):
 # Allow deletion of tasks from the queue (only if they haven't started)
 @app.route('/api/tasks/<task_id>', methods=['DELETE'])
 def delete_task(task_id):
-    if task_id in tasks:
-        delete_task_db(task_id)
-        del tasks[task_id]
+    if delete_task_from_queue(task_id):
         return jsonify({"status": "success"})
     return jsonify({"status": "error"}), 404
 

@@ -31,7 +31,7 @@ DOWNLOAD_DIR.mkdir(exist_ok=True)  # Ensure download directory exists
 
 download_queue = queue.Queue()
 active_downloads = 0
-queue_lock = threading.Lock()
+queue_lock = threading.RLock()
 
 # Initialize DB and load tasks
 init_db()
@@ -100,31 +100,42 @@ def get_video_info(url):
 
 def add_download(url, selected_format=None):
     task_id = str(uuid.uuid4())
-    tasks[task_id] = {
-        'id': task_id,
-        'url': url,
-        'status': 'Waiting',
-        'progress': 0,
-        'stage': 'Queued',
-        'selected_format': selected_format,
-        'filename': None,
-        'filesize': None,
-        'resolution': '-',
-        'time_taken': None,
-        'created_at': time.time()
-    }
-    save_task(tasks[task_id])
-    publish_task_update()
-    download_queue.put(task_id)
+    with queue_lock:
+        tasks[task_id] = {
+            'id': task_id,
+            'url': url,
+            'status': 'Waiting',
+            'progress': 0,
+            'stage': 'Queued',
+            'selected_format': selected_format,
+            'filename': None,
+            'filesize': None,
+            'resolution': '-',
+            'time_taken': None,
+            'created_at': time.time()
+        }
+        save_task(tasks[task_id])
+        publish_task_update()
+        download_queue.put(task_id)
     return task_id
 
 def cancel_task(task_id):
-    if task_id in tasks:
-        task = tasks[task_id]
-        if task['status'] in ['Downloading', 'Waiting']:
-            task['status'] = 'Cancelled'
-            task['stage'] = 'Stopping'
-            save_task(task)
+    with queue_lock:
+        if task_id in tasks:
+            task = tasks[task_id]
+            if task['status'] in ['Downloading', 'Waiting']:
+                task['status'] = 'Cancelled'
+                task['stage'] = 'Stopping'
+                save_task(task)
+                publish_task_update()
+                return True
+    return False
+
+def delete_task_from_queue(task_id):
+    with queue_lock:
+        if task_id in tasks:
+            delete_task_db(task_id)
+            del tasks[task_id]
             publish_task_update()
             return True
     return False
@@ -474,25 +485,27 @@ def clear_queue():
 def clean_completed():
     cleaned = []
     clean_completed_db()
-    for task_id, task in list(tasks.items()):
-        if task['status'] in ['Completed', 'Cancelled'] or task['status'].startswith('Error'):
-            cleaned.append(task_id)
-            del tasks[task_id]
+    with queue_lock:
+        for task_id, task in list(tasks.items()):
+            if task['status'] in ['Completed', 'Cancelled'] or task['status'].startswith('Error'):
+                cleaned.append(task_id)
+                del tasks[task_id]
     return cleaned
 
 def get_queue_stats():
-    waiting = sum(1 for t in tasks.values() if t['status'] == 'Waiting')
-    downloading = sum(1 for t in tasks.values() if t['status'] == 'Downloading')
-    completed = sum(1 for t in tasks.values() if t['status'] == 'Completed')
-    failed = sum(1 for t in tasks.values() if t['status'].startswith('Error'))
-    stats = {
-        'waiting': waiting,
-        'downloading': downloading,
-        'completed': completed,
-        'failed': failed,
-        'total': len(tasks),
-        'active_downloads': active_downloads
-    }
+    with queue_lock:
+        waiting = sum(1 for t in tasks.values() if t['status'] == 'Waiting')
+        downloading = sum(1 for t in tasks.values() if t['status'] == 'Downloading')
+        completed = sum(1 for t in tasks.values() if t['status'] == 'Completed')
+        failed = sum(1 for t in tasks.values() if t['status'].startswith('Error'))
+        stats = {
+            'waiting': waiting,
+            'downloading': downloading,
+            'completed': completed,
+            'failed': failed,
+            'total': len(tasks),
+            'active_downloads': active_downloads
+        }
     return stats
 
 def publish_task_update():
