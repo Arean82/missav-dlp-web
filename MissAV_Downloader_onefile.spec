@@ -14,7 +14,7 @@ hidden_imports = [
     'queue', 'uuid', 'logging', 'subprocess', 'platform', 
     'shutil', 'pathlib', 'webbrowser', 'mutagen', 'mutagen.mp4', 
     'cloudscraper', 'bs4', 'sqlite3', 'customtkinter', 'PIL', 
-    'PIL._tkinter_finder'
+    'PIL._tkinter_finder', 'markdown'
 ]
 
 datas = [

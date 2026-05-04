@@ -38,13 +38,12 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       # 3. Extract metadata (tags, labels) for Docker
-      # Replace YOUR_DOCKERHUB_USERNAME with your actual Docker Hub username. Keep the /missav-dlp-web part exactly as it is)
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: |
-            YOUR_DOCKERHUB_USERNAME/missav-dlp-web    
+            ${{ secrets.DOCKERHUB_USERNAME }}/missav-dlp-web    
             ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=latest
