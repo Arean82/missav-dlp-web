@@ -23,7 +23,7 @@ from .download_manager import (
 )
 from .db_manager import delete_task_db
 from .config_manager import load_settings, save_settings
-from .utils import is_jav_code, jav_code_to_url
+from .utils import is_jav_code, jav_code_to_url, read_log_tail
 from .language import lang_manager
 from .event_bus import event_bus
 
@@ -400,14 +400,21 @@ def get_doc(doc_type):
 
     return jsonify({"status": "success", "content": content})
 
-# Log retrieval route
 @app.route('/api/logs/<task_id>', methods=['GET'])
 def get_log(task_id):
     log_file = ROOT_DIR / 'logs' / f'task_{task_id}.log'
-    if log_file.exists():
+    if not log_file.exists():
+        return jsonify({"status": "error"}), 404
+        
+    full = request.args.get('full', 'false').lower() == 'true'
+    
+    if full:
         with open(log_file, 'r', encoding='utf-8') as f:
             return jsonify({"status": "success", "log": f.read()})
-    return jsonify({"status": "error"}), 404
+    else:
+        # Default to last 100KB for performance
+        log_content = read_log_tail(log_file)
+        return jsonify({"status": "success", "log": log_content})
 
 # Crawler route to extract video info from a given URL with optional filter and pagination
 @app.route('/api/crawl', methods=['POST'])
