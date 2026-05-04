@@ -97,8 +97,8 @@ async function fetchTasks() {
             <span class="stat">✅ ${_('completed')}: ${stats.completed}</span>
             <span class="stat">❌ ${_('failed')}: ${stats.failed}</span>
         `;
-        if (data.tasks) {
-            renderTasks(data.tasks);
+        if (tasks) {
+            renderTasks(tasks);
         }
     } catch(e) { console.error(e); }
 }

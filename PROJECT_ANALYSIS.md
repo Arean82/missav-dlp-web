@@ -38,6 +38,9 @@ This document summarizes the audit, implementation status, and production state 
 | ✅     | **Connectivity**       | Proxy bypass gaps in Crawler/Tags.      | Centralized proxy helper in `utils.py` implemented. |
 | ✅     | **Resource Leak**      | SSE subscriber queue overflow.          | Auto-unsubscribing full queues in `event_bus.py`.   |
 | ✅     | **Log Clarity**        | Technical stdout pollution.             | Redirected format logic to task-specific loggers.     |
+| ✅     | **Thread Safety**      | EventBus race condition in SSE.         | Implemented `threading.Lock` for subscriber lists.    |
+| ✅     | **Terminal State**     | Failed mirrors left tasks "stuck".      | Added explicit save/publish on mirror exhaustion.     |
+| ⏳     | **Path Selection**     | Manual path entry is error-prone.       | **Internal Folder Browser**: Modal-based explorer.    |
 
 ---
 
@@ -46,7 +49,7 @@ This document summarizes the audit, implementation status, and production state 
 | Status | Feature                       | Transformation                         | Result                                                                       |
 | :----- | :---------------------------- | :------------------------------------- | :--------------------------------------------------------------------------- |
 | ✅     | **One-File Bundling**   | Manual environment setup required.     | **PyInstaller Spec** handles all hidden imports (curl-cffi, mutagen).  |
-| ✅     | **Asset Portability**   | Relative path issues in compiled EXEs. | **Root-Relative Path Mapping** for templates and locales.              |
+| ✅     | **Asset Portability**   | Relative path issues in compiled EXEs. | **Portable Logic**: Uses `sys.executable` to persist data in EXE folder. |
 | ✅     | **Multi-Mode Launcher** | GUI crashes on headless servers.       | **Tri-Mode Detection**: Docker ➡️ Modern GUI ➡️ Terminal Fallback. |
 | ✅     | **Binary Embedding**    | Missing ffmpeg/spoofdpi binaries.      | **Bundled Assets** included in one-dir/one-file distribution.          |
 
