@@ -19,6 +19,7 @@ DEFAULT_SETTINGS = {
     'sequential_mode': True,
     'proxy_bypass_all': True,
     'theme': 'dark',
+    'style': 'glass',
     'ratelimit': 0  # 0 means no limit
 }
 

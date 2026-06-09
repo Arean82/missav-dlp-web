@@ -1,12 +1,15 @@
-/* templates/theme.css - Simplified Design System */
+/* templates/theme.css - Design System Matrix */
 
-:root[data-theme='dark'] {
+/* =========================================
+   STYLE: GLASSMORPHISM (Default)
+   ========================================= */
+:root[data-style='glass'][data-theme='dark'] {
     --bg-color: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-    --aura-color: none;
     --card-bg: rgba(22, 33, 62, 0.6);
     --card-border: rgba(255, 255, 255, 0.1);
     --card-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
     --glass-blur: blur(12px);
+    --card-radius: 10px;
     --input-bg: rgba(15, 52, 96, 0.5);
     --input-border: rgba(255, 255, 255, 0.1);
     --input-text: #ffffff;
@@ -19,13 +22,13 @@
     --btn-secondary-text: #00d9ff;
 }
 
-:root[data-theme='light'] {
+:root[data-style='glass'][data-theme='light'] {
     --bg-color: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
-    --aura-color: none;
     --card-bg: rgba(255, 255, 255, 0.45);
     --card-border: rgba(255, 255, 255, 0.6);
     --card-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
     --glass-blur: blur(12px);
+    --card-radius: 10px;
     --input-bg: rgba(255, 255, 255, 0.6);
     --input-border: rgba(255, 255, 255, 0.6);
     --input-text: #1a1a2e;
@@ -36,4 +39,87 @@
     --btn-primary-text: #ffffff;
     --btn-secondary-bg: rgba(255, 255, 255, 0.6);
     --btn-secondary-text: #0055ff;
+}
+
+/* =========================================
+   STYLE: NEUMORPHISM (Soft UI)
+   ========================================= */
+:root[data-style='neumorphic'][data-theme='dark'] {
+    --bg-color: #292d32;
+    --card-bg: #292d32;
+    --card-border: transparent;
+    --card-shadow: 8px 8px 16px #1c1e22, -8px -8px 16px #363c42;
+    --glass-blur: none;
+    --card-radius: 20px;
+    --input-bg: #292d32;
+    --input-border: transparent;
+    --input-text: #ffffff;
+    --text-primary: #ffffff;
+    --text-secondary: #aaaaaa;
+    --accent-color: #00d9ff;
+    --btn-primary-bg: #292d32;
+    --btn-primary-text: #00d9ff;
+    --btn-secondary-bg: #292d32;
+    --btn-secondary-text: #aaaaaa;
+}
+
+:root[data-style='neumorphic'][data-theme='light'] {
+    --bg-color: #e0e5ec;
+    --card-bg: #e0e5ec;
+    --card-border: transparent;
+    --card-shadow: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
+    --glass-blur: none;
+    --card-radius: 20px;
+    --input-bg: #e0e5ec;
+    --input-border: transparent;
+    --input-text: #333333;
+    --text-primary: #333333;
+    --text-secondary: #666666;
+    --accent-color: #0055ff;
+    --btn-primary-bg: #e0e5ec;
+    --btn-primary-text: #0055ff;
+    --btn-secondary-bg: #e0e5ec;
+    --btn-secondary-text: #666666;
+}
+
+/* =========================================
+   STYLE: CYBERPUNK (Neon UI)
+   ========================================= */
+:root[data-style='cyberpunk'][data-theme='dark'] {
+    --bg-color: #0d0e15;
+    --card-bg: #0d0e15;
+    --card-border: #fcee0a;
+    --card-shadow: 4px 4px 0px #00f0ff, -4px -4px 0px #ff003c;
+    --glass-blur: none;
+    --card-radius: 0px;
+    --input-bg: #1a1a24;
+    --input-border: #00f0ff;
+    --input-text: #fcee0a;
+    --text-primary: #00f0ff;
+    --text-secondary: #ff003c;
+    --accent-color: #fcee0a;
+    --btn-primary-bg: #fcee0a;
+    --btn-primary-text: #000000;
+    --btn-secondary-bg: transparent;
+    --btn-secondary-text: #00f0ff;
+}
+
+:root[data-style='cyberpunk'][data-theme='light'] {
+    /* Fallback for light mode cyberpunk (High contrast bright yellow) */
+    --bg-color: #fcee0a;
+    --card-bg: #ffffff;
+    --card-border: #000000;
+    --card-shadow: 6px 6px 0px #ff003c, -6px -6px 0px #00f0ff;
+    --glass-blur: none;
+    --card-radius: 0px;
+    --input-bg: #ffffff;
+    --input-border: #000000;
+    --input-text: #000000;
+    --text-primary: #000000;
+    --text-secondary: #ff003c;
+    --accent-color: #000000;
+    --btn-primary-bg: #000000;
+    --btn-primary-text: #fcee0a;
+    --btn-secondary-bg: #ffffff;
+    --btn-secondary-text: #000000;
 }
