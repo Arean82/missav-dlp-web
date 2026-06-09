@@ -22,9 +22,9 @@ pip install -r requirements.txt
 pip install pyinstaller
 
 :: 4. Check for SpoofDPI binary
-if not exist "spoofdpi.exe" (
-    echo ⚠️ Warning: spoofdpi.exe not found in project root. 
-    echo Please download it from https://github.com/xvzc/SpoofDPI/releases
+if not exist "bin\spoofdpi.exe" (
+    echo ⚠️ Warning: spoofdpi.exe not found in bin folder. 
+    echo Please download it from https://github.com/xvzc/SpoofDPI/releases and place it in the 'bin' folder.
     pause
 )
 

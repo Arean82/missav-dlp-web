@@ -14,38 +14,39 @@ hidden_imports = [
     'queue', 'uuid', 'logging', 'subprocess', 'platform', 
     'shutil', 'pathlib', 'webbrowser', 'mutagen', 'mutagen.mp4', 
     'cloudscraper', 'bs4', 'sqlite3', 'customtkinter', 'PIL', 
-    'PIL._tkinter_finder', 'markdown'
+    'PIL._tkinter_finder', 'markdown', 'pyturso', 'psutil'
 ]
 
 datas = [
     ('templates', 'templates'),
     ('locales', 'locales'),
-    ('app_files', 'app_files'),
-    ('README.md', '.'),
-    ('README.ko.md', '.'),
-    ('README.ja.md', '.'),
-    ('README.zh.md', '.'),
-    ('SECURITY.md', '.'),
+    ('static', 'static'),
+    ('backend', 'backend'),
+    ('docs/README.md', 'docs'),
+    ('docs/README.ko.md', 'docs'),
+    ('docs/README.ja.md', 'docs'),
+    ('docs/README.zh.md', 'docs'),
+    ('docs/SECURITY.md', 'docs'),
 ]
 
-if os.path.exists('License'):
-    datas.append(('License', '.'))
-elif os.path.exists('LICENSE'):
-    datas.append(('LICENSE', '.'))
+if os.path.exists('docs/License'):
+    datas.append(('docs/License', 'docs'))
+elif os.path.exists('docs/LICENSE'):
+    datas.append(('docs/LICENSE', 'docs'))
 
 # Collect runtime data
 datas += collect_data_files('curl_cffi')
 datas += collect_data_files('customtkinter')
 
 # Add SpoofDPI (handle cross-platform)
-if os.path.exists('spoofdpi.exe'):
-    datas.append(('spoofdpi.exe', '.'))
-elif os.path.exists('spoofdpi'):
-    datas.append(('spoofdpi', '.'))
+if os.path.exists('bin/spoofdpi.exe'):
+    datas.append(('bin/spoofdpi.exe', 'bin'))
+elif os.path.exists('bin/spoofdpi'):
+    datas.append(('bin/spoofdpi', 'bin'))
 
 # Add FFmpeg folder
-if os.path.exists('ffmpeg'):
-    datas.append(('ffmpeg', 'ffmpeg'))
+if os.path.exists('bin/ffmpeg'):
+    datas.append(('bin/ffmpeg', 'bin/ffmpeg'))
 
 a = Analysis(
     ['main.py'],

@@ -21,7 +21,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # 5. Create necessary directories for persistence
-RUN mkdir -p /app/downloads /app/logs
+RUN mkdir -p /app/downloads /app/logs /app/data
 
 # 6. Set Environment Variables
 ENV FLASK_HOST=0.0.0.0

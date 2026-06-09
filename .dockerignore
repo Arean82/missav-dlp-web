@@ -11,7 +11,7 @@ Dockerfile
 # App Data (Generated at runtime in container)
 downloads/
 logs/
-.settings.json
+data/
 
 # Python cache
 __pycache__/
@@ -32,4 +32,4 @@ Thumbs.db
 1.txt
 
 # Crucial: Do NOT copy the Windows binary into the Linux container
-spoofdpi.exe
+bin/spoofdpi.exe

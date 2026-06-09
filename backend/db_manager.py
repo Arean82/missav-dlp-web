@@ -1,15 +1,20 @@
-# app_files/db_manager.py - SQLite Persistence for Tasks
+# app_files/db_manager.py - PyTurso (libSQL) Persistence for Tasks
 
-import sqlite3
+import turso
+import sqlite3 # Kept for Row factory if needed, though turso acts identically
 import json
+import time
 from pathlib import Path
 from .paths import ROOT_DIR
 
-DB_PATH = ROOT_DIR / 'tasks.db'
+DATA_DIR = ROOT_DIR / 'data'
+DATA_DIR.mkdir(exist_ok=True)
+DB_PATH = str(DATA_DIR / 'tasks.db')
 
 def get_db():
-    conn = sqlite3.connect(DB_PATH)
-    conn.row_factory = sqlite3.Row
+    conn = turso.connect(DB_PATH)
+    # PyTurso generally uses sqlite3.Row or its own Row type for dict-like access
+    conn.row_factory = sqlite3.Row 
     return conn
 
 def init_db():
@@ -93,3 +98,21 @@ def clean_completed_db():
     cursor.execute("DELETE FROM tasks WHERE status = 'Completed' OR status LIKE 'Error%' OR status = 'Cancelled'")
     conn.commit()
     conn.close()
+
+def prune_old_tasks():
+    """Automatically deletes finished/failed tasks older than 30 days"""
+    thirty_days_ago = time.time() - (30 * 24 * 60 * 60)
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        DELETE FROM tasks 
+        WHERE (status = 'Completed' OR status LIKE 'Error%' OR status = 'Cancelled')
+        AND created_at < ?
+    ''', (thirty_days_ago,))
+    
+    deleted_count = cursor.rowcount
+    conn.commit()
+    conn.close()
+    
+    if deleted_count > 0:
+        print(f"[DB Manager] Pruned {deleted_count} old tasks from the database.")

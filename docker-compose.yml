@@ -11,5 +11,4 @@ services:
     volumes:
       - ./downloads:/app/downloads
       - ./logs:/app/logs
-      - ./tasks.db:/app/tasks.db
-      - ./.settings.json:/app/.settings.json
+      - ./data:/app/data

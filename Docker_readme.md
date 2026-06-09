@@ -17,6 +17,7 @@ services:
     volumes:
       - /home/main/downloads:/app/downloads
       - /home/main/logs:/app/logs
+      - /home/main/data:/app/data
 ```
 *(Note: If you are testing Docker locally on your Windows PC right now, change `/home/main/downloads` to something like `C:\Users\user\Downloads\DockerTest` so you can easily find the files on your PC).*
 

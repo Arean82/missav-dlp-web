@@ -34,11 +34,12 @@ else
     echo "⚠️ Unknown OS: $OS_TYPE"
 fi
 
-if [ ! -f "$SPOOF_BINARY" ]; then
-    echo "🔍 SpoofDPI binary not found. Attempting to download..."
+if [ ! -f "bin/$SPOOF_BINARY" ]; then
+    echo "🔍 SpoofDPI binary not found in bin folder. Attempting to download..."
     curl -fsSL $DOWNLOAD_URL | bash
-    # Move from installation dir to project root
-    cp ~/.spoofdpi/bin/spoofdpi .
+    # Move from installation dir to project bin folder
+    mkdir -p bin
+    cp ~/.spoofdpi/bin/spoofdpi bin/
 fi
 
 # 5. Build the application

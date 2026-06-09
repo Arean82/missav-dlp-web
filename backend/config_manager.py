@@ -16,10 +16,11 @@ DEFAULT_SETTINGS = {
     'download_dir': str(ROOT_DIR / 'downloads'),
     'delay_between_downloads': 3,
     'max_retries': 3,
-    'sequential_mode': True,
     'proxy_bypass_all': True,
     'theme': 'dark',
     'style': 'glass',
+    'turso_url': '',
+    'turso_token': '',
     'ratelimit': 0  # 0 means no limit
 }
 

@@ -36,7 +36,13 @@ DOWNLOAD_DIR.mkdir(exist_ok=True)
 SPOOFDPI_PORT = int(settings.get('spoofdpi_port', 8080))
 SPOOFDPI_PROXY = f"http://127.0.0.1:{SPOOFDPI_PORT}"
 
+import atexit
+import psutil
+
+spoofdpi_process = None
+
 def start_spoofdpi():
+    global spoofdpi_process
     system = platform.system().lower()
     proc = None
     
@@ -94,6 +100,9 @@ def start_spoofdpi():
                                creationflags=creationflags,
                                text=True, bufsize=1)
         
+        spoofdpi_process = proc
+        atexit.register(stop_spoofdpi)
+        
         # Start a thread to stream SpoofDPI logs to the GUI console
         import threading
         def stream_spoofdpi_logs(p):
@@ -114,6 +123,28 @@ def start_spoofdpi():
         print(f"[System] Error starting SpoofDPI: {e}", flush=True)
             
     return proc
+
+def stop_spoofdpi():
+    global spoofdpi_process
+    if spoofdpi_process:
+        print("\n[System] Aggressively killing SpoofDPI process tree to prevent zombies...")
+        try:
+            parent = psutil.Process(spoofdpi_process.pid)
+            for child in parent.children(recursive=True):
+                child.kill()
+            parent.kill()
+        except psutil.NoSuchProcess:
+            pass
+        except Exception as e:
+            print(f"[System] Error killing SpoofDPI: {e}")
+        spoofdpi_process = None
+
+# Initialize Pruning
+from .db_manager import prune_old_tasks
+try:
+    prune_old_tasks()
+except Exception as e:
+    print(f"[DB Manager] Error pruning tasks: {e}")
 
 # --- FLASK APP INITIALIZATION ---
 app = Flask(__name__, 
