@@ -41,6 +41,9 @@ h3 {
     padding: 20px;
     margin-bottom: 20px;
     border: 1px solid var(--card-border, #0f3460);
+    box-shadow: var(--card-shadow, none);
+    backdrop-filter: var(--glass-blur, none);
+    -webkit-backdrop-filter: var(--glass-blur, none);
 }
 
 .url-bar {
@@ -137,6 +140,9 @@ button:active {
     display: flex;
     gap: 15px;
     align-items: center;
+    box-shadow: var(--card-shadow, none);
+    backdrop-filter: var(--glass-blur, none);
+    -webkit-backdrop-filter: var(--glass-blur, none);
 }
 
 .task-thumb {
@@ -216,6 +222,9 @@ button:active {
     flex-wrap: wrap;
     gap: 10px;
     border: 1px solid var(--card-border, #0f3460);
+    box-shadow: var(--card-shadow, none);
+    backdrop-filter: var(--glass-blur, none);
+    -webkit-backdrop-filter: var(--glass-blur, none);
 }
 
 .batch-input {
@@ -285,6 +294,9 @@ button:active {
     padding: 20px;
     border-radius: 10px;
     border: 1px solid var(--accent-color, #00d9ff);
+    box-shadow: var(--card-shadow, none);
+    backdrop-filter: var(--glass-blur, none);
+    -webkit-backdrop-filter: var(--glass-blur, none);
 }
 
 .setting-group {
