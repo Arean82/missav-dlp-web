@@ -16,13 +16,13 @@ import logging
 from pathlib import Path
 import yt_dlp
 from urllib.parse import urlparse
-from app_files.extractor import MyCustomMissAV
-from app_files.config_manager import load_settings
-from app_files.utils import is_jav_code, jav_code_to_url
-from app_files.paths import DOWNLOADS_DIR, LOGS_DIR, ROOT_DIR, FFMPEG_DIR
-from app_files.db_manager import init_db, save_task, load_all_tasks, delete_task_db, clear_all_tasks_db, clean_completed_db
-from app_files.event_bus import event_bus
-from app_files.metadata_tagger import fetch_missav_metadata, inject_metadata
+from backend.extractor import MyCustomMissAV
+from backend.config_manager import load_settings
+from backend.utils import is_jav_code, jav_code_to_url
+from backend.paths import DOWNLOADS_DIR, LOGS_DIR, ROOT_DIR, FFMPEG_DIR
+from backend.db_manager import init_db, save_task, load_all_tasks, delete_task_db, clear_all_tasks_db, clean_completed_db
+from backend.event_bus import event_bus
+from backend.metadata_tagger import fetch_missav_metadata, inject_metadata
 
 settings = load_settings()
 DOWNLOAD_DIR = Path(settings.get('download_dir', str(DOWNLOADS_DIR)))
@@ -123,11 +123,36 @@ def cancel_task(task_id):
     with queue_lock:
         if task_id in tasks:
             task = tasks[task_id]
-            if task['status'] in ['Downloading', 'Waiting']:
+            if task['status'] in ['Downloading', 'Waiting', 'Paused']:
                 task['status'] = 'Cancelled'
                 task['stage'] = 'Stopping'
                 save_task(task)
                 publish_task_update()
+                return True
+    return False
+
+def pause_task(task_id):
+    with queue_lock:
+        if task_id in tasks:
+            task = tasks[task_id]
+            if task['status'] in ['Downloading', 'Waiting']:
+                task['status'] = 'Paused'
+                task['stage'] = 'Paused'
+                save_task(task)
+                publish_task_update()
+                return True
+    return False
+
+def resume_task(task_id):
+    with queue_lock:
+        if task_id in tasks:
+            task = tasks[task_id]
+            if task['status'] == 'Paused':
+                task['status'] = 'Waiting'
+                task['stage'] = 'Queued'
+                save_task(task)
+                publish_task_update()
+                download_queue.put(task_id)
                 return True
     return False
 
@@ -167,8 +192,8 @@ def download_video(task_id, url, selected_format=None):
     last_logged_p = -1
     def progress_hook(d):
         nonlocal last_logged_p
-        if task_id not in tasks or tasks[task_id].get('status') == 'Cancelled':
-            raise DownloadCancelled("Cancelled")
+        if task_id not in tasks or tasks[task_id].get('status') in ['Cancelled', 'Paused']:
+            raise DownloadCancelled("Cancelled or Paused")
         if d['status'] == 'downloading':
             p = d.get('_percent_str', '0%')
             p_clean = re.sub(r'\x1b[^m]*m', '', p).strip().replace('%', '')

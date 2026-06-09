@@ -13,7 +13,7 @@
 The MissAV Downloader is designed with a focus on user privacy and local-first data management.
 
 ### 🛡️ Data Privacy
-- **Local Storage**: All download history and settings are stored locally in an `tasks.db` (SQLite) and `.settings.json` file. No data is sent to external servers other than the video sources themselves.
+- **Local Storage**: All download history and settings are stored locally in the `data/tasks.db` (SQLite) and `data/.settings.json` files. No data is sent to external servers other than the video sources themselves.
 - **No Analytics**: This application does not contain any tracking, telemetry, or analytics scripts.
 
 ### 🌐 Network Security

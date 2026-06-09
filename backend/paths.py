@@ -8,10 +8,13 @@ if getattr(sys, 'frozen', False):
     ROOT_DIR = Path(sys.executable).parent
 else:
     # If running as script, use the parent of app_files
-    ROOT_DIR = Path(__file__).parent.parent
+    ROOT_DIR = Path(__file__).resolve().parent.parent
 
-# Define all paths relative to root
-DOWNLOADS_DIR = ROOT_DIR / 'downloads'
-LOGS_DIR = ROOT_DIR / 'logs'
-SETTINGS_FILE = ROOT_DIR / '.settings.json'
+# Create standard directories if they don't exist
+DOWNLOADS_DIR = ROOT_DIR / "downloads"
+DATA_DIR = ROOT_DIR / "data"
+LOGS_DIR = ROOT_DIR / "logs"
+
+DB_FILE = DATA_DIR / "tasks.db"
+SETTINGS_FILE = DATA_DIR / ".settings.json"
 FFMPEG_DIR = ROOT_DIR / 'ffmpeg'

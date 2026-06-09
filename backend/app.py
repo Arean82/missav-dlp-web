@@ -19,7 +19,8 @@ from .crawler import scrape_videos, get_filters
 from .paths import ROOT_DIR, DOWNLOADS_DIR, SETTINGS_FILE
 from .download_manager import (
     get_video_info, add_download, add_batch, tasks, get_queue_stats,
-    clear_queue, clean_completed, adjust_workers, cancel_task, delete_task_from_queue
+    clear_queue, clean_completed, adjust_workers, cancel_task, delete_task_from_queue,
+    pause_task, resume_task
 )
 from .db_manager import delete_task_db
 from .config_manager import load_settings, save_settings
@@ -41,7 +42,7 @@ def start_spoofdpi():
     
     # 1. Determine Binary Name & Local Path
     bin_name = 'spoofdpi.exe' if system == 'windows' else 'spoofdpi'
-    local_bin = BASE_DIR / bin_name
+    local_bin = BASE_DIR / 'bin' / bin_name
     
     # 2. Find Executable
     spoof_cmd = None
@@ -71,7 +72,7 @@ def start_spoofdpi():
         print(f"⚠️  SpoofDPI not found on {system}!")
         print("="*60)
         if system == 'windows':
-            print(f"Please place 'spoofdpi.exe' in {BASE_DIR}")
+            print(f"Please place 'spoofdpi.exe' in {BASE_DIR / 'bin'}")
         elif system == 'linux':
             print("Install: curl -fsSL https://raw.githubusercontent.com/xvzc/SpoofDPI/main/install.sh | bash")
         elif system == 'darwin':
@@ -87,22 +88,36 @@ def start_spoofdpi():
             import subprocess
             creationflags = subprocess.CREATE_NO_WINDOW # Hide window on Windows
             
-        proc = subprocess.Popen([spoof_cmd, '-port', str(SPOOFDPI_PORT)], 
+        proc = subprocess.Popen([spoof_cmd, '-listen-port', str(SPOOFDPI_PORT), '-window-size', '0'], 
                                stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                                start_new_session=(system != 'windows'),
-                               creationflags=creationflags)
+                               creationflags=creationflags,
+                               text=True, bufsize=1)
+        
+        # Start a thread to stream SpoofDPI logs to the GUI console
+        import threading
+        def stream_spoofdpi_logs(p):
+            try:
+                for line in p.stdout:
+                    print(f"[SpoofDPI] {line.strip()}", flush=True)
+            except: pass
+            
+        t = threading.Thread(target=stream_spoofdpi_logs, args=(proc,), daemon=True)
+        t.start()
+        
         time.sleep(2)
         if proc.poll() is None:
             print(f"[System] SpoofDPI started via {spoof_cmd} (Port: {SPOOFDPI_PORT})", flush=True)
+        else:
+            print(f"[System] ⚠️ SpoofDPI crashed immediately with exit code: {proc.poll()}", flush=True)
     except Exception as e:
         print(f"[System] Error starting SpoofDPI: {e}", flush=True)
             
     return proc
 
 # --- FLASK APP INITIALIZATION ---
-# We point both static_folder and template_folder to ROOT_DIR/templates
 app = Flask(__name__, 
-            static_folder=str(ROOT_DIR / 'templates'), 
+            static_folder=str(ROOT_DIR / 'static'), 
             template_folder=str(ROOT_DIR / 'templates'),
             static_url_path='/static')
 
@@ -224,6 +239,18 @@ def get_tasks():
 @app.route('/api/tasks/<task_id>/cancel', methods=['POST'])
 def task_cancel(task_id):
     if cancel_task(task_id):
+        return jsonify({"status": "success"})
+    return jsonify({"status": "error"}), 404
+
+@app.route('/api/tasks/<task_id>/pause', methods=['POST'])
+def task_pause(task_id):
+    if pause_task(task_id):
+        return jsonify({"status": "success"})
+    return jsonify({"status": "error"}), 404
+
+@app.route('/api/tasks/<task_id>/resume', methods=['POST'])
+def task_resume(task_id):
+    if resume_task(task_id):
         return jsonify({"status": "success"})
     return jsonify({"status": "error"}), 404
 
@@ -383,11 +410,11 @@ def get_doc(doc_type):
         'license': 'License'
     }
 
-    target_file = ROOT_DIR / base_filenames[doc_type]
+    target_file = ROOT_DIR / 'docs' / base_filenames[doc_type]
     
     # Check for localized file (except for LICENSE)
     if doc_type != 'license' and lang != 'en':
-        lang_file = ROOT_DIR / base_filenames[doc_type].replace('.md', f'.{lang}.md')
+        lang_file = ROOT_DIR / 'docs' / base_filenames[doc_type].replace('.md', f'.{lang}.md')
         if lang_file.exists():
             target_file = lang_file
 

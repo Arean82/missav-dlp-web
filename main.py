@@ -16,7 +16,7 @@ def is_docker():
     return os.path.exists('/.dockerenv')
 
 # Import app components
-from app_files.app import app, start_spoofdpi, DOWNLOAD_DIR, ROOT_DIR
+from backend.app import app, start_spoofdpi, DOWNLOAD_DIR, ROOT_DIR
 
 # Logging setup
 log = logging.getLogger('werkzeug')

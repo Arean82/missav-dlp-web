@@ -111,31 +111,32 @@ http://[YOUR_NAS_OR_SERVER_IP]:58000
 
 ## 📁 Project Structure
 
-```
+```text
 missav-dlp-web/
-├── app.py                    # Main Flask application
-├── .settings.json            # User settings (auto-generated)
+├── main.py                   # Entry point
+├── backend/                  # Backend modules
+│   ├── app.py                # Main Flask application
+│   ├── config_manager.py     # Settings management
+│   ├── download_manager.py   # Download queue & yt-dlp
+│   ├── extractor.py          # Custom MissAV extractor
+│   ├── language.py           # Multilingual support
+│   ├── paths.py              # Path management
+│   └── utils.py              # Helper functions
+├── data/                     # Database and settings
+│   ├── tasks.db              # SQLite Database
+│   └── .settings.json        # User settings
+├── static/                   # Frontend static assets
+│   ├── css/
+│   └── js/
+├── templates/                # Web interface
+│   └── index.html            # Main page
+├── bin/                      # Binaries
+│   ├── spoofdpi.exe          # Windows proxy tool
+│   └── ffmpeg/               # FFmpeg binaries
 ├── downloads/                # Downloaded videos
 ├── logs/                     # Download task logs
 ├── locales/                  # Language files
-│   ├── en.json              # English
-│   ├── ko.json              # Korean
-│   ├── ja.json              # Japanese
-│   └── zh.json              # Chinese (Simplified)
-├── templates/                # Web interface
-│   ├── index.html           # Main page
-│   ├── script.js            # Frontend logic
-│   └── style.css            # Styles
-├── app_files/               # Backend modules
-│   ├── config_manager.py    # Settings management
-│   ├── download_manager.py  # Download queue & yt-dlp
-│   ├── extractor.py         # Custom MissAV extractor
-│   ├── language.py          # Multilingual support
-│   ├── paths.py             # Path management
-│   └── utils.py             # Helper functions
-└── ffmpeg/                  # FFmpeg binaries (optional)
-    └── bin/
-        └── ffmpeg.exe
+└── docs/                     # Documentation files
 ```
 
 ## 🌍 Language Support

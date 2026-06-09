@@ -126,6 +126,9 @@ function renderTasks(tasks) {
         } else if (t.status === 'Downloading') {
             cls = 'downloading';
             statusText = _('downloading');
+        } else if (t.status === 'Paused') {
+            cls = 'paused';
+            statusText = _('paused') || 'Paused';
         } else {
             statusText = t.status;
         }
@@ -157,12 +160,18 @@ function renderTasks(tasks) {
                         </div>
                         <div class="task-actions">
                             ${(t.status === 'Downloading' || t.status === 'Waiting') ? 
+                                `<button onclick="pauseTask('${id}')" class="btn-secondary" style="padding:5px 10px; margin-right:5px;" title="${_('pause') || 'Pause'}">⏸️</button>` : ''
+                            }
+                            ${t.status === 'Paused' ? 
+                                `<button onclick="resumeTask('${id}')" class="btn-primary" style="padding:5px 10px; margin-right:5px;" title="${_('resume') || 'Resume'}">▶️</button>` : ''
+                            }
+                            ${(t.status === 'Downloading' || t.status === 'Waiting' || t.status === 'Paused') ? 
                                 `<button onclick="cancelTask('${id}')" class="btn-secondary" style="padding:5px 10px; margin-right:5px;" title="${_('stop')}">🛑</button>` : ''
                             }
                             <button onclick="deleteTask('${id}')" class="btn-danger" style="padding:5px 10px" title="${_('delete')}">✕</button>
                         </div>
                     </div>
-                    ${(t.status === 'Downloading' || t.status === 'Waiting') ? `
+                    ${(t.status === 'Downloading' || t.status === 'Waiting' || t.status === 'Paused') ? `
                         <div class="progress-bar">
                             <div class="progress-fill" style="width: ${progress}%"></div>
                         </div>
@@ -183,6 +192,16 @@ async function deleteTask(id) {
 
 async function cancelTask(id) {
     await fetch(`/api/tasks/${id}/cancel`, { method: 'POST' });
+    fetchTasks();
+}
+
+async function pauseTask(id) {
+    await fetch(`/api/tasks/${id}/pause`, { method: 'POST' });
+    fetchTasks();
+}
+
+async function resumeTask(id) {
+    await fetch(`/api/tasks/${id}/resume`, { method: 'POST' });
     fetchTasks();
 }
 

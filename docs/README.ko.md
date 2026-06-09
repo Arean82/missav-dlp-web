@@ -91,31 +91,32 @@ http://[YOUR_NAS_OR_SERVER_IP]:58000
 
 ## 📁 프로젝트 구조
 
-```id=
+```text
 missav-dlp-web/
-├── app.py                    # 메인 Flask 애플리케이션
-├── .settings.json            # 사용자 설정 (자동 생성)
+├── main.py                   # 진입점
+├── backend/                  # 백엔드 모듈
+│   ├── app.py                # 메인 Flask 애플리케이션
+│   ├── config_manager.py     # 설정 관리
+│   ├── download_manager.py   # 다운로드 큐 및 yt-dlp
+│   ├── extractor.py          # 커스텀 MissAV 추출기
+│   ├── language.py           # 다국어 지원
+│   ├── paths.py              # 경로 관리
+│   └── utils.py              # 유틸리티 함수
+├── data/                     # 데이터베이스 및 설정
+│   ├── tasks.db              # SQLite 데이터베이스
+│   └── .settings.json        # 사용자 설정
+├── static/                   # 프론트엔드 정적 자산
+│   ├── css/
+│   └── js/
+├── templates/                # 웹 인터페이스
+│   └── index.html            # 메인 페이지
+├── bin/                      # 바이너리
+│   ├── spoofdpi.exe          # Windows 프록시 도구
+│   └── ffmpeg/               # FFmpeg 바이너리
 ├── downloads/                # 다운로드된 영상
 ├── logs/                     # 다운로드 작업 로그
 ├── locales/                  # 언어 파일
-│   ├── en.json              # 영어
-│   ├── ko.json              # 한국어
-│   ├── ja.json              # 일본어
-│   └── zh.json              # 중국어(간체)
-├── templates/                # 웹 인터페이스
-│   ├── index.html           # 메인 페이지
-│   ├── script.js            # 프론트엔드 로직
-│   └── style.css            # 스타일
-├── app_files/               # 백엔드 모듈
-│   ├── config_manager.py    # 설정 관리
-│   ├── download_manager.py  # 다운로드 큐 및 yt-dlp
-│   ├── extractor.py         # 커스텀 MissAV 추출기
-│   ├── language.py          # 다국어 지원
-│   ├── paths.py             # 경로 관리
-│   └── utils.py             # 유틸리티 함수
-└── ffmpeg/                  # FFmpeg 바이너리 (선택 사항)
-    └── bin/
-        └── ffmpeg.exe
+└── docs/                     # 문서 파일
 ```
 
 ## 🌍 언어 지원

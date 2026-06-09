@@ -99,5 +99,8 @@
   "proxy_bypass_all": "グローバルプロキシバイパス (SpoofDPI)",
   "ffmpeg_path": "FFmpeg実行ファイルのディレクトリ",
   "browse_folders": "フォルダを参照",
-  "select_folder": "フォルダを選択"
+  "select_folder": "フォルダを選択",
+  "pause": "一時停止",
+  "resume": "再開",
+  "paused": "一時停止中"
 }

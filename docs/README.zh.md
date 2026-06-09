@@ -91,31 +91,32 @@ http://[YOUR_NAS_OR_SERVER_IP]:58000
 
 ## 📁 项目结构
 
-```
+```text
 missav-dlp-web/
-├── app.py                    # 主 Flask 应用程序
-├── .settings.json            # 用户设置（自动生成）
+├── main.py                   # 入口点
+├── backend/                  # 后端模块
+│   ├── app.py                # 主 Flask 应用程序
+│   ├── config_manager.py     # 设置管理
+│   ├── download_manager.py   # 下载队列 & yt-dlp
+│   ├── extractor.py          # 自定义 MissAV 提取器
+│   ├── language.py           # 多语言支持
+│   ├── paths.py              # 路径管理
+│   └── utils.py              # 实用函数
+├── data/                     # 数据库和设置
+│   ├── tasks.db              # SQLite 数据库
+│   └── .settings.json        # 用户设置
+├── static/                   # 前端静态资产
+│   ├── css/
+│   └── js/
+├── templates/                # Web 界面
+│   └── index.html            # 主页
+├── bin/                      # 二进制文件
+│   ├── spoofdpi.exe          # Windows 代理工具
+│   └── ffmpeg/               # FFmpeg 二进制文件
 ├── downloads/                # 已下载的视频
 ├── logs/                     # 下载任务日志
 ├── locales/                  # 语言文件
-│   ├── en.json              # 英语
-│   ├── ko.json              # 韩语
-│   ├── ja.json              # 日语
-│   └── zh.json              # 简体中文
-├── templates/                # Web 界面
-│   ├── index.html           # 主页面
-│   ├── script.js            # 前端逻辑
-│   └── style.css            # 样式
-├── app_files/               # 后端模块
-│   ├── config_manager.py    # 设置管理
-│   ├── download_manager.py  # 下载队列与 yt-dlp
-│   ├── extractor.py         # 自定义 MissAV 提取器
-│   ├── language.py          # 多语言支持
-│   ├── paths.py             # 路径管理
-│   └── utils.py             # 工具函数
-└── ffmpeg/                  # FFmpeg 二进制（可选）
-    └── bin/
-        └── ffmpeg.exe
+└── docs/                     # 文档文件
 ```
 
 ## 🌍 语言支持

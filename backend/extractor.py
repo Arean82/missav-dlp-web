@@ -9,7 +9,7 @@ import re
 from urllib.parse import urlparse
 from yt_dlp.extractor.common import InfoExtractor
 from curl_cffi import requests as cffi_requests
-from app_files.paths import ROOT_DIR  
+from backend.paths import ROOT_DIR  
 
 # Default settings for extractor (fallback if not provided)
 DEFAULT_MIRRORS = ['missav.ai', 'missav.net', 'missav123.com', 'missav.com', 'missav.ws']

@@ -4,7 +4,7 @@ import os
 import json
 import secrets
 from pathlib import Path
-from app_files.paths import SETTINGS_FILE, ROOT_DIR
+from backend.paths import SETTINGS_FILE, ROOT_DIR
 
 DEFAULT_SETTINGS = {
     'max_concurrent': 1,

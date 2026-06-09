@@ -1,0 +1,16 @@
+    <!-- URL Input -->
+    <div class="card">
+        <div class="url-bar">
+            <input type="text" id="urlInput" data-i18n-placeholder="url_placeholder" placeholder="Enter URL or JAV code (e.g., ABP-123)">
+            <button id="startDownloadBtn">⬇️ <span data-i18n="download_now">Download</span></button>
+            <button id="batchBtn" class="btn-secondary">📋 <span data-i18n="batch_add">Batch Add</span></button>
+            <button id="customBtn" class="btn-secondary">🔗 <span data-i18n="custom">Custom</span></button>
+        </div>
+        <div id="batchPanel" class="hidden">
+            <textarea id="batchUrls" class="batch-input" data-i18n-placeholder="batch_placeholder" placeholder="Enter one URL or JAV code per line..."></textarea>
+            <div class="button-group">
+                <button id="addBatchBtn">➕ <span data-i18n="add_all">Add All to Queue</span></button>
+                <button id="cancelBatchBtn" class="btn-secondary"><span data-i18n="cancel">Cancel</span></button>
+            </div>
+        </div>
+    </div>

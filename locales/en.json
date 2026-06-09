@@ -99,5 +99,8 @@
   "proxy_bypass_all": "Global Proxy Bypass (SpoofDPI)",
   "ffmpeg_path": "FFmpeg Bin Directory",
   "browse_folders": "Browse Folders",
-  "select_folder": "Select Folder"
+  "select_folder": "Select Folder",
+  "pause": "Pause",
+  "resume": "Resume",
+  "paused": "Paused"
 }

@@ -94,7 +94,15 @@ def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
             full_url = urljoin(base_domain, href)
             
             # Match video URL pattern
-            if re.search(r'/en/[a-z]+-\d', full_url):
+            # Video URLs are typically at the root of /en/ and contain a dash (e.g. /en/code-123 or /en/something-uncensored-leak)
+            is_video = False
+            if '/en/' in full_url:
+                slug = full_url.split('/en/')[-1]
+                # Exclude listing/info paths
+                if '/' not in slug and '-' in slug and not slug.startswith('?'):
+                    is_video = True
+                    
+            if is_video:
                 
                 # 1. Extract Code from URL (e.g., .../en/ABP-123 -> ABP-123)
                 try:
@@ -112,8 +120,12 @@ def scrape_videos(base_url, selected_filter=None, pages_to_scrape=None):
                     # Fallback to link text
                     title = a.get_text(strip=True)
                 
-                # Filter out timestamps or bad data
-                if title and not re.match(r'\d+:\d+:\d+', title) and len(title) > 5:
+                # 3. Filter out timestamps or generic "uncensored" strings (matching user script logic)
+                if (
+                    title and
+                    title.lower() != "uncensored" and
+                    not all(c.isdigit() or c == ":" for c in title)
+                ):
                     all_videos.append({
                         'url': full_url,
                         'title': title,
