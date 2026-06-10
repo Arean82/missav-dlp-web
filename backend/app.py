@@ -41,10 +41,41 @@ import psutil
 
 spoofdpi_process = None
 
+def disable_windows_proxy():
+    if platform.system().lower() == 'windows':
+        try:
+            import winreg
+            internet_settings = winreg.OpenKey(winreg.HKEY_CURRENT_USER,
+                r'Software\Microsoft\Windows\CurrentVersion\Internet Settings',
+                0, winreg.KEY_ALL_ACCESS)
+            winreg.SetValueEx(internet_settings, 'ProxyEnable', 0, winreg.REG_DWORD, 0)
+            winreg.CloseKey(internet_settings)
+            
+            import ctypes
+            internet_set_option = ctypes.windll.wininet.InternetSetOptionW
+            internet_set_option(0, 39, 0, 0) # INTERNET_OPTION_SETTINGS_CHANGED
+            internet_set_option(0, 37, 0, 0) # INTERNET_OPTION_REFRESH
+            print("[System] Windows system proxy successfully reset.")
+        except Exception as e:
+            print(f"[System] Failed to disable Windows system proxy: {e}")
+
 def start_spoofdpi():
     global spoofdpi_process
     system = platform.system().lower()
     proc = None
+    
+    # 0. Kill any existing instances to free up port
+    bin_name = 'spoofdpi.exe' if system == 'windows' else 'spoofdpi'
+    try:
+        killed_any = False
+        for p in psutil.process_iter(['name']):
+            if p.info['name'] == bin_name:
+                p.kill()
+                killed_any = True
+        if killed_any:
+            disable_windows_proxy()
+    except Exception as e:
+        pass
     
     # 1. Determine Binary Name & Local Path
     bin_name = 'spoofdpi.exe' if system == 'windows' else 'spoofdpi'
@@ -137,6 +168,10 @@ def stop_spoofdpi():
             pass
         except Exception as e:
             print(f"[System] Error killing SpoofDPI: {e}")
+        
+        # Reset Windows Proxy just in case SpoofDPI didn't clean up
+        disable_windows_proxy()
+        
         spoofdpi_process = None
 
 # Initialize Pruning

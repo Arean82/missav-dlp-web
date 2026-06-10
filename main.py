@@ -16,7 +16,7 @@ def is_docker():
     return os.path.exists('/.dockerenv')
 
 # Import app components
-from backend.app import app, start_spoofdpi, DOWNLOAD_DIR, ROOT_DIR
+from backend.app import app, start_spoofdpi, stop_spoofdpi, DOWNLOAD_DIR, ROOT_DIR
 
 # Logging setup
 log = logging.getLogger('werkzeug')
@@ -103,16 +103,8 @@ def main():
             if messagebox.askokcancel("Exit", "Are you sure you want to exit?"):
                 sys.stdout = sys.__stdout__
                 sys.stderr = sys.__stderr__
-                if spoofdpi_proc:
-                    print("Stopping SpoofDPI...")
-                    if platform.system() == 'Windows':
-                        try:
-                            os.kill(spoofdpi_proc.pid, signal.CTRL_C_EVENT)
-                            time.sleep(1)
-                        except: pass
-                    else:
-                        try: os.killpg(os.getpgid(spoofdpi_proc.pid), signal.SIGTERM)
-                        except: pass
+                print("Stopping SpoofDPI...")
+                stop_spoofdpi()
                 root.destroy()
                 os._exit(0)
 
@@ -264,8 +256,7 @@ def main():
             app.run(host=host, port=port, debug=False)
         except KeyboardInterrupt:
             print("\n[System] Shutting down...")
-            if spoofdpi_proc:
-                spoofdpi_proc.terminate()
+            stop_spoofdpi()
 
 if __name__ == '__main__':
     main()
