@@ -11,10 +11,12 @@ DATA_DIR = ROOT_DIR / 'data'
 DATA_DIR.mkdir(exist_ok=True)
 DB_PATH = str(DATA_DIR / 'tasks.db')
 
+def dict_factory(cursor, row):
+    return {col[0]: row[idx] for idx, col in enumerate(cursor.description)}
+
 def get_db():
     conn = turso.connect(DB_PATH)
-    # PyTurso generally uses sqlite3.Row or its own Row type for dict-like access
-    conn.row_factory = sqlite3.Row 
+    conn.row_factory = dict_factory
     return conn
 
 def init_db():
