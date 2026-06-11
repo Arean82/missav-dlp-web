@@ -23,13 +23,13 @@ async function fetchDir(path) {
             document.getElementById('browserCurrentPath').textContent = data.current_path;
             let html = "";
             if (data.parent_path) {
-                html += `<div class="browser-item" onclick="fetchDir('${data.parent_path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #222; color: #ffcc00;">📁 .. (Parent Directory)</div>`;
+                html += `<div class="browser-item" onclick="fetchDir('${data.parent_path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid var(--card-border); color: var(--accent-color);">📁 .. (Parent Directory)</div>`;
             }
             if (data.folders.length === 0) {
                 html += `<div style="padding:20px; text-align:center; opacity:0.5;">No subfolders found</div>`;
             } else {
                 data.folders.forEach(f => {
-                    html += `<div class="browser-item" onclick="fetchDir('${f.path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #222;">📁 ${escapeHtml(f.name)}</div>`;
+                    html += `<div class="browser-item" onclick="fetchDir('${f.path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid var(--card-border);">📁 ${escapeHtml(f.name)}</div>`;
                 });
             }
             listEl.innerHTML = html;

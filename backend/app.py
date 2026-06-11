@@ -20,7 +20,7 @@ from .paths import ROOT_DIR, DOWNLOADS_DIR, SETTINGS_FILE
 from .download_manager import (
     get_video_info, add_download, add_batch, tasks, get_queue_stats,
     clear_queue, clean_completed, adjust_workers, cancel_task, delete_task_from_queue,
-    pause_task, resume_task
+    pause_task, resume_task, retry_task
 )
 from .db_manager import delete_task_db
 from .config_manager import load_settings, save_settings
@@ -317,6 +317,12 @@ def task_pause(task_id):
 @app.route('/api/tasks/<task_id>/resume', methods=['POST'])
 def task_resume(task_id):
     if resume_task(task_id):
+        return jsonify({"status": "success"})
+    return jsonify({"status": "error"}), 404
+
+@app.route('/api/tasks/<task_id>/retry', methods=['POST'])
+def task_retry(task_id):
+    if retry_task(task_id):
         return jsonify({"status": "success"})
     return jsonify({"status": "error"}), 404
 

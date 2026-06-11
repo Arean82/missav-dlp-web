@@ -20,6 +20,7 @@ def get_db():
 def init_db():
     conn = get_db()
     cursor = conn.cursor()
+    cursor.execute("PRAGMA journal_mode=WAL")
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS tasks (
             id TEXT PRIMARY KEY,
@@ -122,7 +123,8 @@ def shutdown_db():
     try:
         conn = get_db()
         cursor = conn.cursor()
-        cursor.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        # Switching to DELETE mode automatically checkpoints and removes the -wal and -shm files
+        cursor.execute("PRAGMA journal_mode=DELETE")
         conn.close()
     except Exception as e:
         print(f"[DB Manager] Error during db shutdown: {e}")

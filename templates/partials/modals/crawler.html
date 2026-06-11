@@ -6,14 +6,14 @@
                 <button id="closeCrawlerBtn" class="btn-secondary" style="padding: 5px 10px;">✕</button>
             </div>
             
-            <div id="crawlerStatus" class="card" style="padding: 10px; margin-bottom: 10px; background: #252526; font-size: 14px;">
+            <div id="crawlerStatus" class="card" style="padding: 10px; margin-bottom: 10px; background: var(--input-bg, #252526); font-size: 14px;">
                 <span data-i18n="fetching">Fetching...</span>
             </div>
 
-            <div style="flex-grow: 1; overflow-y: auto; border: 1px solid #333; border-radius: 5px;">
+            <div style="flex-grow: 1; overflow-y: auto; border: 1px solid var(--accent-color); border-radius: 5px;">
                 <table class="crawler-table" style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr style="background: #0f3460;">
+                        <tr style="background: var(--btn-secondary-bg, #0f3460);">
                             <th style="width: 40px; text-align: center;"><input type="checkbox" id="crawlerSelectAll"></th>
                             <th style="width: 120px;" data-i18n="code">Code</th>
                             <th data-i18n="title">Title</th>
@@ -63,7 +63,7 @@
             
             <div class="setting-group">
                 <label data-i18n="total_pages">Total Pages Available:</label>
-                <div id="totalPagesDisplay" style="font-size: 24px; font-weight: bold; color: #00d9ff; margin: 10px 0;"></div>
+                <div id="totalPagesDisplay" style="font-size: 24px; font-weight: bold; color: var(--accent-color, #00d9ff); margin: 10px 0;"></div>
             </div>
             
             <div class="setting-group">

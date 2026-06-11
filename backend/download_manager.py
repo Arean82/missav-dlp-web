@@ -153,6 +153,19 @@ def resume_task(task_id):
                 save_task(task)
                 publish_task_update()
                 download_queue.put(task_id)
+    return False
+
+def retry_task(task_id):
+    with queue_lock:
+        if task_id in tasks:
+            task = tasks[task_id]
+            if task['status'].startswith('Error') or task['status'] == 'Cancelled':
+                task['status'] = 'Waiting'
+                task['stage'] = 'Queued'
+                save_task(task)
+                publish_task_update()
+                download_queue.put(task_id)
+                start_workers() # Ensure a worker is running to pick it up
                 return True
     return False
 

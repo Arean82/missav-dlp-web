@@ -156,7 +156,7 @@ function renderTasks(tasks) {
                         <div style="flex:1">
                             <strong>${escapeHtml(title)}</strong>
                             <div style="font-size:12px; opacity:0.8">${statusText} ${stage ? `- ${stage}` : ''}</div>
-                            ${metaInfo ? `<div style="font-size:11px; margin-top:4px; color:#aaa;">${metaInfo}</div>` : ''}
+                            ${metaInfo ? `<div style="font-size:11px; margin-top:4px; color: var(--text-secondary, #aaa);">${metaInfo}</div>` : ''}
                         </div>
                         <div class="task-actions">
                             ${(t.status === 'Downloading' || t.status === 'Waiting') ? 
@@ -167,6 +167,9 @@ function renderTasks(tasks) {
                             }
                             ${(t.status === 'Downloading' || t.status === 'Waiting' || t.status === 'Paused') ? 
                                 `<button onclick="cancelTask('${id}')" class="btn-secondary" style="padding:5px 10px; margin-right:5px;" title="${_('stop')}">🛑</button>` : ''
+                            }
+                            ${(t.status.startsWith('Error') || t.status === 'Cancelled') ? 
+                                `<button onclick="retryTask('${id}')" class="btn-primary" style="padding:5px 10px; margin-right:5px;" title="${_('retry') || 'Retry'}">🔄</button>` : ''
                             }
                             <button onclick="deleteTask('${id}')" class="btn-danger" style="padding:5px 10px" title="${_('delete')}">✕</button>
                         </div>
@@ -201,10 +204,16 @@ async function pauseTask(id) {
 }
 
 async function resumeTask(id) {
-    await fetch(`/api/tasks/${id}/resume`, { method: 'POST' });
+    await fetch(`/api/tasks/${id}/resume`, {method: 'POST'});
     fetchTasks();
 }
 
+async function retryTask(id) {
+    await fetch(`/api/tasks/${id}/retry`, {method: 'POST'});
+    fetchTasks();
+}
+
+// Queue actions
 async function fetchFiles() {
     try {
         const res = await fetch('/api/files');
@@ -234,7 +243,7 @@ async function fetchFiles() {
                 </div>
                 <div>
                     <span style="margin-right:15px">${formatSize(f.size)}</span>
-                    <a href="/api/files/${encodeURIComponent(f.name)}/download" download style="color:#00d9ff; margin-right:10px">⬇ ${_('downloads')}</a>
+                    <a href="/api/files/${encodeURIComponent(f.name)}/download" download style="color: var(--accent-color, #00d9ff); margin-right:10px">⬇ ${_('downloads')}</a>
                     <button onclick="deleteFile('${encodeURIComponent(f.name)}')" class="btn-danger" style="padding:5px 10px">${_('delete')}</button>
                 </div>
             </div>
@@ -637,7 +646,7 @@ async function fetchDir(path) {
             // Add Parent folder link if available
             if (data.parent_path) {
                 html += `
-                    <div class="browser-item" onclick="fetchDir('${data.parent_path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #222; color: #ffcc00;">
+                    <div class="browser-item" onclick="fetchDir('${data.parent_path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid var(--card-border); color: var(--accent-color);">
                         📁 .. (Parent Directory)
                     </div>
                 `;
@@ -648,7 +657,7 @@ async function fetchDir(path) {
             } else {
                 data.folders.forEach(f => {
                     html += `
-                        <div class="browser-item" onclick="fetchDir('${f.path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid #222;">
+                        <div class="browser-item" onclick="fetchDir('${f.path.replace(/\\/g, '\\\\')}')" style="padding: 10px; cursor: pointer; border-bottom: 1px solid var(--card-border);">
                             📁 ${escapeHtml(f.name)}
                         </div>
                     `;

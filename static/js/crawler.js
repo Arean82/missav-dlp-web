@@ -60,7 +60,7 @@ function renderFilterList(filters, currentFilterValue) {
         const filterValue = filters[name];
         const isChecked = (currentFilterValue && filterValue === currentFilterValue) || (idx === 0 && !currentFilterValue);
         html += `
-            <label style="display: block; padding: 8px; margin: 5px 0; background: #0f3460; border-radius: 5px; cursor: pointer;">
+            <label style="display: block; padding: 8px; margin: 5px 0; background: var(--btn-secondary-bg, #0f3460); border-radius: 5px; cursor: pointer;">
                 <input type="radio" name="filter" value="${filterValue !== null ? filterValue : 'all'}" data-filter-name="${name}" ${isChecked ? 'checked' : ''}>
                 <span style="margin-left: 10px;">${escapeHtml(name)}</span>
             </label>
@@ -193,18 +193,18 @@ function renderResultsTable() {
     }
     
     crawlerTableBody.innerHTML = crawlerVideos.map((v, i) => `
-        <tr style="border-bottom: 1px solid #333;">
+        <tr style="border-bottom: 1px solid var(--card-border, #333);">
             <td style="text-align: center; padding: 8px;">
                 <input type="checkbox" data-index="${i}" class="crawler-checkbox">
             </td>
-            <td style="padding: 8px; font-weight: bold; color: #00d9ff;">
+            <td style="padding: 8px; font-weight: bold; color: var(--accent-color, #00d9ff);">
                 ${escapeHtml(v.code || 'N/A')}
             </td>
             <td style="padding: 8px; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${escapeHtml(v.title)}">
                 ${escapeHtml(v.title)}
             </td>
             <td style="padding: 8px; text-align: center;">
-                <a href="${v.url}" target="_blank" style="color: #fff; text-decoration: underline;">${_('link')}</a>
+                <a href="${v.url}" target="_blank" style="color: var(--input-text, #fff); text-decoration: underline;">${_('link')}</a>
             </td>
         </tr>
     `).join('');

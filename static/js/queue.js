@@ -64,7 +64,7 @@ function renderTasks(tasks) {
                         <div style="flex:1">
                             <strong>${escapeHtml(title)}</strong>
                             <div style="font-size:12px; opacity:0.8">${statusText} ${stage ? `- ${stage}` : ''}</div>
-                            ${metaInfo ? `<div style="font-size:11px; margin-top:4px; color:#aaa;">${metaInfo}</div>` : ''}
+                            ${metaInfo ? `<div style="font-size:11px; margin-top:4px; color: var(--text-secondary, #aaa);">${metaInfo}</div>` : ''}
                         </div>
                         <div class="task-actions">
                             ${(t.status === 'Downloading' || t.status === 'Waiting') ? 
@@ -75,6 +75,9 @@ function renderTasks(tasks) {
                             }
                             ${(t.status === 'Downloading' || t.status === 'Waiting' || t.status === 'Paused') ? 
                                 `<button onclick="cancelTask('${id}')" class="btn-secondary" style="padding:5px 10px; margin-right:5px;" title="${_('stop')}">🛑</button>` : ''
+                            }
+                            ${(t.status.startsWith('Error') || t.status === 'Cancelled') ? 
+                                `<button onclick="retryTask('${id}')" class="btn-primary" style="padding:5px 10px; margin-right:5px;" title="${_('retry') || 'Retry'}">🔄</button>` : ''
                             }
                             <button onclick="deleteTask('${id}')" class="btn-danger" style="padding:5px 10px" title="${_('delete')}">✕</button>
                         </div>
@@ -99,7 +102,17 @@ async function deleteTask(id) {
 }
 async function cancelTask(id) { await fetch(`/api/tasks/${id}/cancel`, { method: 'POST' }); fetchTasks(); }
 async function pauseTask(id) { await fetch(`/api/tasks/${id}/pause`, { method: 'POST' }); fetchTasks(); }
-async function resumeTask(id) { await fetch(`/api/tasks/${id}/resume`, { method: 'POST' }); fetchTasks(); }
+async function resumeTask(id) {
+    await fetch(`/api/tasks/${id}/resume`, { method: 'POST' });
+    fetchTasks();
+}
+
+async function retryTask(id) {
+    await fetch(`/api/tasks/${id}/retry`, { method: 'POST' });
+    fetchTasks();
+}
+
+async function clearQueue() {}
 
 document.getElementById('cleanBtn').onclick = async () => { await fetch('/api/queue/clean', { method: 'POST' }); fetchTasks(); };
 document.getElementById('cleanHistoryBtn').onclick = async () => {

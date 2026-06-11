@@ -381,11 +381,11 @@ button:active {
 }
 
 .browser-item:hover {
-    background: #1a1a2e !important;
-    color: #00d9ff;
+    background: var(--input-bg, #1a1a2e) !important;
+    color: var(--accent-color, #00d9ff);
 }
 
 #browserList {
     scrollbar-width: thin;
-    scrollbar-color: #00d9ff #1a1a2e;
+    scrollbar-color: var(--accent-color, #00d9ff) var(--input-bg, #1a1a2e);
 }

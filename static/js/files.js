@@ -27,7 +27,7 @@ async function fetchFiles() {
                 </div>
                 <div>
                     <span style="margin-right:15px">${formatSize(f.size)}</span>
-                    <a href="/api/files/${encodeURIComponent(f.name)}/download" download style="color:#00d9ff; margin-right:10px">⬇ ${_('downloads')}</a>
+                    <a href="/api/files/${encodeURIComponent(f.name)}/download" download style="color: var(--accent-color, #00d9ff); margin-right:10px">⬇ ${_('downloads')}</a>
                     <button onclick="deleteFile('${encodeURIComponent(f.name)}')" class="btn-danger" style="padding:5px 10px">${_('delete')}</button>
                 </div>
             </div>
