@@ -117,9 +117,13 @@ missav-dlp-web/
 ├── backend/                  # Backend modules
 │   ├── app.py                # Main Flask application
 │   ├── config_manager.py     # Settings management
+│   ├── crawler.py            # Custom URL crawler
+│   ├── db_manager.py         # SQLite database management
 │   ├── download_manager.py   # Download queue & yt-dlp
+│   ├── event_bus.py          # SSE (Server-Sent Events) logic
 │   ├── extractor.py          # Custom MissAV extractor
 │   ├── language.py           # Multilingual support
+│   ├── metadata_tagger.py    # MP4 metadata and cover tagging
 │   ├── paths.py              # Path management
 │   └── utils.py              # Helper functions
 ├── data/                     # Database and settings
@@ -129,7 +133,8 @@ missav-dlp-web/
 │   ├── css/
 │   └── js/
 ├── templates/                # Web interface
-│   └── index.html            # Main page
+│   ├── index.html            # Main page
+│   └── partials/             # UI components
 ├── bin/                      # Binaries
 │   ├── spoofdpi.exe          # Windows proxy tool
 │   └── ffmpeg/               # FFmpeg binaries
@@ -137,6 +142,7 @@ missav-dlp-web/
 ├── logs/                     # Download task logs
 ├── locales/                  # Language files
 └── docs/                     # Documentation files
+    └── update_readmes.py     # Auto-translation script
 ```
 
 ## 🌍 Language Support
@@ -351,6 +357,10 @@ This project is based on the excellent work by **[nerdnam](https://github.com/ne
 ---
 
 ## 📝 Changelog
+
+### Version 4.0.1
+- **UI Fixes**: Fixed hardcoded text colors in light mode for the Batch Add, Settings, and Search inputs to ensure they are visible.
+- **Database Polish**: Added a clean shutdown hook to ensure the SQLite Write-Ahead Log (`tasks.db-wal`) is cleanly checkpointed and deleted on application exit.
 
 ### Version 4.0 (Industrial Grade)
 

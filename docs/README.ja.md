@@ -97,9 +97,13 @@ missav-dlp-web/
 ├── backend/                  # バックエンド モジュール
 │   ├── app.py                # メイン Flask アプリケーション
 │   ├── config_manager.py     # 設定管理
+│   ├── crawler.py            # カスタムURLクローラー
+│   ├── db_manager.py         # SQLiteデータベース管理
 │   ├── download_manager.py   # ダウンロード キュー & yt-dlp
+│   ├── event_bus.py          # SSE (Server-Sent Events) ロジック
 │   ├── extractor.py          # カスタム MissAV 抽出器
 │   ├── language.py           # 多言語サポート
+│   ├── metadata_tagger.py    # MP4メタデータおよびカバータグ付け
 │   ├── paths.py              # パス管理
 │   └── utils.py              # ユーティリティ関数
 ├── data/                     # データベースと設定
@@ -109,7 +113,8 @@ missav-dlp-web/
 │   ├── css/
 │   └── js/
 ├── templates/                # Web インターフェース
-│   └── index.html            # メインページ
+│   ├── index.html            # メインページ
+│   └── partials/             # UIコンポーネント
 ├── bin/                      # バイナリ
 │   ├── spoofdpi.exe          # Windows プロキシツール
 │   └── ffmpeg/               # FFmpeg バイナリ
@@ -117,6 +122,7 @@ missav-dlp-web/
 ├── logs/                     # ダウンロードタスクのログ
 ├── locales/                  # 言語ファイル
 └── docs/                     # ドキュメントファイル
+    └── update_readmes.py     # 自動翻訳スクリプト
 ```
 
 ## 🌍 言語サポート
@@ -332,6 +338,11 @@ MIT License - 詳細は [LICENSE](LICENSE) ファイルを参照してくださ�
 ---
 
 ## 📝 変更履歴
+
+### Version 4.0.1
+
+- **UI の修正**: バッチ追加、設定、検索の各入力フォームにおいて、ライトテーマでのテキスト色が見えなくなる問題を修正しました。
+- **データベースの改善**: アプリケーション終了時にSQLite WAL(`tasks.db-wal`)ファイルが適切にチェックポイントされ削除されるよう、クリーンなシャットダウンフックを追加しました。
 
 ### Version 4.0 (Industrial Grade)
 

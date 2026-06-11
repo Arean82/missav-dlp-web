@@ -97,9 +97,13 @@ missav-dlp-web/
 ├── backend/                  # 백엔드 모듈
 │   ├── app.py                # 메인 Flask 애플리케이션
 │   ├── config_manager.py     # 설정 관리
+│   ├── crawler.py            # 커스텀 URL 크롤러
+│   ├── db_manager.py         # SQLite 데이터베이스 관리
 │   ├── download_manager.py   # 다운로드 큐 및 yt-dlp
+│   ├── event_bus.py          # SSE (Server-Sent Events) 로직
 │   ├── extractor.py          # 커스텀 MissAV 추출기
 │   ├── language.py           # 다국어 지원
+│   ├── metadata_tagger.py    # MP4 메타데이터 및 커버 태깅
 │   ├── paths.py              # 경로 관리
 │   └── utils.py              # 유틸리티 함수
 ├── data/                     # 데이터베이스 및 설정
@@ -109,7 +113,8 @@ missav-dlp-web/
 │   ├── css/
 │   └── js/
 ├── templates/                # 웹 인터페이스
-│   └── index.html            # 메인 페이지
+│   ├── index.html            # 메인 페이지
+│   └── partials/             # UI 컴포넌트
 ├── bin/                      # 바이너리
 │   ├── spoofdpi.exe          # Windows 프록시 도구
 │   └── ffmpeg/               # FFmpeg 바이너리
@@ -117,6 +122,7 @@ missav-dlp-web/
 ├── logs/                     # 다운로드 작업 로그
 ├── locales/                  # 언어 파일
 └── docs/                     # 문서 파일
+    └── update_readmes.py     # 자동 번역 스크립트
 ```
 
 ## 🌍 언어 지원
@@ -332,6 +338,11 @@ MIT License - 자세한 내용은 [LICENSE](LICENSE) 파일을 참고하세요�
 ---
 
 ## 📝 변경 기록
+
+### Version 4.0.1
+
+- **UI 수정**: 라이트 테마에서 일괄 추가, 설정 및 검색 입력창의 텍스트 색상을 가시적으로 수정했습니다.
+- **데이터베이스 폴리시**: 애플리케이션 종료 시 SQLite WAL(`tasks.db-wal`) 파일이 정리되고 삭제되도록 깔끔한 종료 후크를 추가했습니다.
 
 ### Version 4.0 (Industrial Grade)
 

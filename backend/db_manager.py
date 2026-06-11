@@ -116,3 +116,13 @@ def prune_old_tasks():
     
     if deleted_count > 0:
         print(f"[DB Manager] Pruned {deleted_count} old tasks from the database.")
+
+def shutdown_db():
+    """Checkpoint and clear WAL file on shutdown"""
+    try:
+        conn = get_db()
+        cursor = conn.cursor()
+        cursor.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+        conn.close()
+    except Exception as e:
+        print(f"[DB Manager] Error during db shutdown: {e}")

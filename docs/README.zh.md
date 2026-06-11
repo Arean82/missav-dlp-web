@@ -97,9 +97,13 @@ missav-dlp-web/
 ├── backend/                  # 后端模块
 │   ├── app.py                # 主 Flask 应用程序
 │   ├── config_manager.py     # 设置管理
+│   ├── crawler.py            # 自定义 URL 爬虫
+│   ├── db_manager.py         # SQLite 数据库管理
 │   ├── download_manager.py   # 下载队列 & yt-dlp
+│   ├── event_bus.py          # SSE (Server-Sent Events) 逻辑
 │   ├── extractor.py          # 自定义 MissAV 提取器
 │   ├── language.py           # 多语言支持
+│   ├── metadata_tagger.py    # MP4 元数据及封面注入
 │   ├── paths.py              # 路径管理
 │   └── utils.py              # 实用函数
 ├── data/                     # 数据库和设置
@@ -109,7 +113,8 @@ missav-dlp-web/
 │   ├── css/
 │   └── js/
 ├── templates/                # Web 界面
-│   └── index.html            # 主页
+│   ├── index.html            # 主页
+│   └── partials/             # UI 组件
 ├── bin/                      # 二进制文件
 │   ├── spoofdpi.exe          # Windows 代理工具
 │   └── ffmpeg/               # FFmpeg 二进制文件
@@ -117,6 +122,7 @@ missav-dlp-web/
 ├── logs/                     # 下载任务日志
 ├── locales/                  # 语言文件
 └── docs/                     # 文档文件
+    └── update_readmes.py     # 自动翻译脚本
 ```
 
 ## 🌍 语言支持
@@ -332,6 +338,11 @@ MIT License - 详见 [LICENSE](LICENSE) 文件
 ---
 
 ## 📝 更新日志
+
+### Version 4.0.1
+
+- **UI 修复**: 修复了浅色主题下批量添加、设置和搜索输入框的硬编码文本颜色，确保其清晰可见。
+- **数据库优化**: 添加了干净的关闭钩子，以确保应用程序退出时正确触发 SQLite WAL (`tasks.db-wal`) 检查点并清理文件。
 
 ### Version 4.0 (Industrial Grade)
 

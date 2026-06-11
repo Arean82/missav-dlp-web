@@ -17,6 +17,7 @@ def is_docker():
 
 # Import app components
 from backend.app import app, start_spoofdpi, stop_spoofdpi, DOWNLOAD_DIR, ROOT_DIR
+from backend.db_manager import shutdown_db
 
 # Logging setup
 log = logging.getLogger('werkzeug')
@@ -105,6 +106,8 @@ def main():
                 sys.stderr = sys.__stderr__
                 print("Stopping SpoofDPI...")
                 stop_spoofdpi()
+                print("Closing Database...")
+                shutdown_db()
                 root.destroy()
                 os._exit(0)
 
@@ -257,6 +260,7 @@ def main():
         except KeyboardInterrupt:
             print("\n[System] Shutting down...")
             stop_spoofdpi()
+            shutdown_db()
 
 if __name__ == '__main__':
     main()

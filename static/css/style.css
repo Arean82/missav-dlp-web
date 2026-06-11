@@ -237,7 +237,7 @@ button:active {
     background: var(--input-bg, #0f3460);
     border: 1px solid var(--accent-color, #00d9ff);
     border-radius: 8px;
-    color: white;
+    color: var(--input-text, white);
     font-family: monospace;
     margin-bottom: 10px;
 }
@@ -248,7 +248,7 @@ button:active {
     background: var(--input-bg, #0f3460);
     border: 1px solid var(--accent-color, #00d9ff);
     border-radius: 5px;
-    color: white;
+    color: var(--input-text, white);
     margin-bottom: 15px;
 }
 
@@ -263,7 +263,7 @@ button:active {
     padding: 8px;
     border-radius: 5px;
     background: var(--input-bg, #0f3460);
-    color: white;
+    color: var(--input-text, white);
     border: 1px solid var(--accent-color, #00d9ff);
 }
 
@@ -319,7 +319,7 @@ button:active {
     background: var(--input-bg, #0f3460);
     border: 1px solid var(--accent-color, #00d9ff);
     border-radius: 5px;
-    color: white;
+    color: var(--input-text, white);
 }
 
 .setting-textarea {
@@ -328,7 +328,7 @@ button:active {
     background: var(--input-bg, #0f3460);
     border: 1px solid var(--accent-color, #00d9ff);
     border-radius: 5px;
-    color: white;
+    color: var(--input-text, white);
     font-family: monospace;
     resize: vertical;
 }
