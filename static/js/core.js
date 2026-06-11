@@ -97,3 +97,8 @@ function initEventSource() {
 
 initLanguage();
 initEventSource();
+
+// Fallback polling to ensure UI is updated even if SSE drops silently
+setInterval(() => {
+    if (typeof fetchTasks === 'function') fetchTasks();
+}, 5000);

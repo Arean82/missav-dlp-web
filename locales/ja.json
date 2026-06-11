@@ -102,5 +102,11 @@
   "select_folder": "フォルダを選択",
   "pause": "一時停止",
   "resume": "再開",
-  "paused": "一時停止中"
+  "paused": "一時停止中",
+  "extract_urls": "URLを抽出",
+  "extracting_please_wait": "URLを抽出中... しばらくお待ちください。",
+  "extract_no_videos": "待機中の動画が見つかりません。",
+  "download_txt": ".txtをダウンロード",
+  "copy_to_clipboard": "コピー",
+  "retry": "再試行"
 }

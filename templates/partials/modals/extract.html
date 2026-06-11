@@ -1,0 +1,20 @@
+<!-- Extract URLs Modal -->
+<div id="extractModal" class="modal hidden" style="display: none;">
+    <div class="modal-content" style="max-width: 800px; display: flex; flex-direction: column;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <h3 id="extractModalTitle" style="margin:0;" data-i18n="extract_urls">Extract Download URLs</h3>
+            <button id="closeExtractBtn" class="btn-secondary" style="padding: 5px 10px;">✕</button>
+        </div>
+        
+        <div id="extractStatus" class="card" style="padding: 10px; margin-bottom: 10px; background: var(--input-bg, #252526); font-size: 14px; color: var(--accent-color);">
+            <span id="extractStatusText" data-i18n="extracting_please_wait">Extracting URLs... Please wait.</span>
+        </div>
+
+        <textarea id="extractTextArea" readonly style="flex-grow: 1; height: 300px; width: 100%; padding: 10px; background: var(--input-bg); color: var(--input-text); border: 1px solid var(--card-border); border-radius: 5px; font-family: monospace; font-size: 13px; resize: vertical; white-space: pre; overflow-wrap: normal; overflow-x: auto;"></textarea>
+
+        <div class="button-group" style="margin-top: 15px;">
+            <button id="copyExtractBtn" class="btn-secondary">📋 <span data-i18n="copy_to_clipboard">Copy</span></button>
+            <button id="downloadExtractBtn" class="btn-primary">⬇️ <span data-i18n="download_txt">Download .txt</span></button>
+        </div>
+    </div>
+</div>

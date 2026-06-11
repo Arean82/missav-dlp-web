@@ -102,5 +102,11 @@
   "select_folder": "选择文件夹",
   "pause": "暂停",
   "resume": "恢复",
-  "paused": "已暂停"
+  "paused": "已暂停",
+  "extract_urls": "提取 URL",
+  "extracting_please_wait": "正在提取 URL... 请稍候。",
+  "extract_no_videos": "没有找到等待中的视频。",
+  "download_txt": "下载 .txt",
+  "copy_to_clipboard": "复制",
+  "retry": "重试"
 }

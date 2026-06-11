@@ -345,6 +345,20 @@ def queue_clean():
     cleaned = clean_completed()
     return jsonify({"status": "success", "cleaned": len(cleaned)})
 
+@app.route('/api/queue/extract_urls', methods=['POST'])
+def extract_urls():
+    waiting_tasks = [t for t in tasks.values() if t['status'] == 'Waiting']
+    urls = []
+    for t in waiting_tasks:
+        try:
+            info = get_video_info(t['url'])
+            if info and 'url' in info:
+                urls.append(info['url'])
+        except Exception as e:
+            print(f"[Extract] Error getting info for {t['url']}: {e}")
+            pass
+    return jsonify({"status": "success", "urls": urls})
+
 # Get queue stats
 @app.route('/api/queue/stats', methods=['GET'])
 def queue_stats():
@@ -360,6 +374,8 @@ def get_settings():
 def update_settings():
     global settings, DOWNLOAD_DIR
     new_settings = request.json
+    
+    old_use_spoofdpi = settings.get('use_spoofdpi', True)
     
     # Validate FFmpeg path if provided
     ffmpeg_path = new_settings.get('ffmpeg_path', '').strip()
@@ -383,6 +399,13 @@ def update_settings():
     
     # Dynamically adjust download threads if max_concurrent changed
     adjust_workers(settings.get('max_concurrent', 1))
+    
+    # Immediately start/stop SpoofDPI if toggled
+    new_use_spoofdpi = settings.get('use_spoofdpi', True)
+    if new_use_spoofdpi and not old_use_spoofdpi:
+        start_spoofdpi()
+    elif not new_use_spoofdpi and old_use_spoofdpi:
+        stop_spoofdpi()
     
     return jsonify({"status": "success"})
 

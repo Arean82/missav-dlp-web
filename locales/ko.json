@@ -102,5 +102,11 @@
   "select_folder": "폴더 선택",
   "pause": "일시정지",
   "resume": "계속",
-  "paused": "일시정지됨"
+  "paused": "일시정지됨",
+  "extract_urls": "URL 추출",
+  "extracting_please_wait": "URL을 추출하는 중... 잠시만 기다려주세요.",
+  "extract_no_videos": "대기 중인 비디오가 없습니다.",
+  "download_txt": ".txt 다운로드",
+  "copy_to_clipboard": "복사",
+  "retry": "재시도"
 }
